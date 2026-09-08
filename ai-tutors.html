@@ -106,7 +106,92 @@
       footer { padding:54px 24px 28px; } .footer-grid { grid-template-columns:1fr; } .closing,.copyright { margin-left:0; }
     }
     @media (prefers-reduced-motion:reduce) { html { scroll-behavior:auto; } .answer-side,.arrow { transition:none; } }
-  </style>
+  
+/* Standardized type scale */
+:root{
+  --text-xs:12px;
+  --text-sm:13px;
+  --text-md:16px;
+  --text-lg:18px;
+  --title-sm:28px;
+  --title-md:42px;
+  --title-lg:62px;
+}
+
+body{
+  font-size:var(--text-md);
+  line-height:1.58;
+}
+
+h1{
+  font-size:clamp(40px,4.5vw,var(--title-lg));
+  line-height:1.08;
+  letter-spacing:-0.055em;
+  font-weight:400;
+}
+
+.topic h2{
+  font-size:var(--title-sm);
+  line-height:1.18;
+  letter-spacing:-0.04em;
+  font-weight:400;
+}
+
+.answer-title{
+  font-size:clamp(30px,2.7vw,var(--title-md));
+  line-height:1.16;
+  letter-spacing:-0.05em;
+  font-weight:400;
+}
+
+.meta,
+.intro,
+.topic-description,
+.answer-copy p{
+  font-size:var(--text-md);
+  line-height:1.72;
+}
+
+.question-text{
+  font-size:var(--text-md);
+  line-height:1.45;
+}
+
+.index-link,
+.links,
+.answer-nav button{
+  font-size:var(--text-sm);
+  line-height:1.45;
+  font-weight:500;
+}
+
+.eyebrow,
+.topic-jump-label,
+.index-heading,
+.topic-number,
+.answer-position,
+.tag,
+.topic-jump-links a,
+.footer-label,
+.copyright,
+figcaption{
+  font-size:var(--text-xs);
+  line-height:1.45;
+  font-weight:500;
+}
+
+.closing{
+  font-size:var(--text-md);
+  line-height:1.65;
+}
+
+@media (max-width:520px){
+  h1{font-size:clamp(38px,11vw,52px);}
+  .topic h2{font-size:24px;}
+  .answer-title{font-size:30px;}
+}
+
+</style>
 </head>
 <body>
   <nav class="topbar" aria-label="Primary"><a class="mark" href="index.html" aria-label="Back to Anand Grandhi home">A.</a><a class="index-link" href="#topics">Topics</a></nav>
