@@ -3,197 +3,250 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Working notes on the questions an AI tutor should be able to answer before deciding how to teach.">
-  <title>The questions every AI tutor should answer</title>
+  <meta name="description" content="Working notes on the questions an AI tutor should answer before deciding how to teach.">
+  <title>Notes on building better AI tutors — Anand Grandhi</title>
   <style>
     :root {
       color-scheme: light;
-      --paper: #f7f5ef;
-      --ink: #171717;
-      --muted: #686762;
-      --line: #cbc8bf;
-      --accent: #2b59c3;
-      --accent-soft: #e8edfa;
-      --panel: #fbfaf6;
+      --blue: #0e63ff;
+      --blue-soft: #dce8ff;
+      --ink: #34384c;
+      --muted: #73798d;
+      --line: #dfe1e8;
+      --paper: #ffffff;
+      --panel: #f7f9fc;
+      --yellow: #fff4cf;
+      --green: #e5f2d9;
+      --pink: #f2ddfa;
+      --lavender: #e6e4ff;
+      --peach: #ffe5d4;
     }
 
     * { box-sizing: border-box; }
 
     html {
       scroll-behavior: smooth;
-      background: var(--paper);
+      background: var(--blue);
     }
 
     body {
       margin: 0;
       color: var(--ink);
-      background:
-        linear-gradient(90deg, transparent 0, transparent calc(50% - 35rem), rgba(43, 89, 195, .10) calc(50% - 35rem), rgba(43, 89, 195, .10) calc(50% - 34.94rem), transparent calc(50% - 34.94rem)),
-        var(--paper);
-      font-family: Georgia, "Times New Roman", serif;
-      font-size: 18px;
-      line-height: 1.62;
+      background: var(--paper);
+      font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-size: 16px;
+      line-height: 1.5;
       text-rendering: optimizeLegibility;
     }
 
-    .page {
-      width: min(100% - 40px, 1060px);
-      margin: 0 auto;
-      padding: 34px 0 88px;
+    a { color: inherit; }
+
+    .topbar {
+      display: inline-flex;
+      align-items: stretch;
+      margin: 12px 0 0 12px;
+      border-radius: 7px;
+      background: #f4f7fb;
+      box-shadow: 0 1px 10px rgba(27, 44, 76, .05);
+      overflow: hidden;
     }
 
-    .eyebrow,
-    .meta,
-    .section-tag,
-    .controls button,
-    .count,
-    footer {
-      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    .mark,
+    .index-link {
+      display: grid;
+      place-items: center;
+      min-height: 56px;
+      text-decoration: none;
+    }
+
+    .mark {
+      width: 70px;
+      color: var(--blue);
+      font-size: 1.35rem;
+      font-weight: 800;
+      letter-spacing: -.08em;
+    }
+
+    .index-link {
+      padding: 0 26px 0 20px;
+      color: var(--ink);
+      font-size: .96rem;
+    }
+
+    .index-link:hover,
+    .index-link:focus-visible { color: var(--blue); }
+
+    main {
+      min-height: 76vh;
+      padding: 120px 48px 150px;
+    }
+
+    .column {
+      width: min(100%, 720px);
     }
 
     .eyebrow {
-      margin: 0 0 54px;
-      color: var(--accent);
-      font-size: .72rem;
-      letter-spacing: .08em;
-      text-transform: uppercase;
-    }
-
-    header {
-      display: grid;
-      grid-template-columns: minmax(0, 1fr) 235px;
-      gap: 78px;
-      align-items: end;
-      border-bottom: 1px solid var(--ink);
-      padding-bottom: 30px;
+      margin: 0 0 42px;
+      color: var(--muted);
+      font-size: .78rem;
+      letter-spacing: .03em;
     }
 
     h1 {
-      max-width: 760px;
+      max-width: 680px;
       margin: 0;
-      font-size: clamp(2.7rem, 7vw, 5.45rem);
+      font-size: clamp(2rem, 4.2vw, 3.85rem);
       font-weight: 400;
-      letter-spacing: -.055em;
-      line-height: .96;
+      letter-spacing: -.04em;
+      line-height: 1.12;
+    }
+
+    h1 em {
+      color: var(--blue);
+      font-family: Georgia, "Times New Roman", serif;
+      font-weight: 400;
     }
 
     .meta {
-      margin: 0 0 4px;
+      max-width: 520px;
+      margin: 30px 0 0;
       color: var(--muted);
-      font-size: .72rem;
-      line-height: 1.55;
+      font-size: .92rem;
+      line-height: 1.65;
     }
 
     .intro {
-      display: grid;
-      grid-template-columns: 168px minmax(0, 680px);
-      gap: 42px;
-      margin: 32px 0 60px;
+      max-width: 610px;
+      margin: 84px 0 0;
+      padding-top: 22px;
+      border-top: 1px solid var(--line);
+      font-size: 1.08rem;
+      line-height: 1.65;
     }
 
-    .intro .label {
-      margin: 5px 0 0;
-      color: var(--accent);
-      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-      font-size: .72rem;
-      letter-spacing: .06em;
-      text-transform: uppercase;
-    }
-
-    .intro p {
-      margin: 0;
-      font-size: 1.13rem;
-      line-height: 1.55;
-    }
-
-    .list-head {
+    .topic-controls {
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 20px;
-      margin-bottom: 12px;
-    }
-
-    .count {
+      margin: 105px 0 18px;
       color: var(--muted);
-      font-size: .7rem;
-      letter-spacing: .04em;
-      text-transform: uppercase;
+      font-size: .78rem;
     }
 
     .controls {
       display: flex;
-      gap: 16px;
+      gap: 18px;
     }
 
     .controls button {
-      appearance: none;
       border: 0;
       border-bottom: 1px solid transparent;
-      padding: 5px 0;
+      padding: 2px 0;
       color: var(--muted);
       background: transparent;
-      font-size: .7rem;
+      font: inherit;
       cursor: pointer;
     }
 
     .controls button:hover,
     .controls button:focus-visible {
-      color: var(--accent);
+      color: var(--blue);
       border-bottom-color: currentColor;
       outline: none;
     }
 
+    .topic {
+      display: grid;
+      grid-template-columns: 78px minmax(0, 1fr);
+      column-gap: 22px;
+      padding: 40px 0 54px;
+      border-top: 1px solid var(--line);
+      scroll-margin-top: 24px;
+    }
+
+    .topic-number {
+      padding-top: 4px;
+      color: var(--muted);
+      font-size: .78rem;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .topic h2 {
+      margin: 0;
+      font-size: clamp(1.45rem, 2.6vw, 2rem);
+      font-weight: 400;
+      letter-spacing: -.025em;
+      line-height: 1.25;
+    }
+
+    .topic-description {
+      max-width: 560px;
+      margin: 8px 0 28px;
+      color: var(--muted);
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 1rem;
+      font-style: italic;
+      line-height: 1.55;
+    }
+
     .questions {
-      border-top: 1px solid var(--ink);
+      border-top: 1px solid var(--line);
     }
 
     details {
       border-bottom: 1px solid var(--line);
-      background: transparent;
     }
 
-    details[open] {
-      background: var(--panel);
-      border-bottom-color: var(--ink);
-    }
+    details[open] { background: var(--panel); }
 
     summary {
       display: grid;
-      grid-template-columns: 64px 1fr 28px;
-      gap: 18px;
-      align-items: baseline;
-      padding: 22px 8px 21px 0;
+      grid-template-columns: minmax(0, 1fr) auto 18px;
+      gap: 14px;
+      align-items: center;
+      min-height: 58px;
+      padding: 13px 8px 13px 0;
       cursor: pointer;
       list-style: none;
-      font-size: clamp(1.12rem, 2.3vw, 1.45rem);
-      line-height: 1.3;
     }
 
     summary::-webkit-details-marker { display: none; }
 
     summary:hover .question,
-    summary:focus-visible .question {
-      color: var(--accent);
-    }
+    summary:focus-visible .question { color: var(--blue); }
 
     summary:focus-visible {
-      outline: 2px solid var(--accent);
-      outline-offset: -2px;
+      outline: 2px solid var(--blue);
+      outline-offset: 2px;
     }
 
-    .number {
-      color: var(--muted);
-      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-      font-size: .72rem;
+    .question {
+      font-size: 1rem;
+      line-height: 1.42;
     }
+
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      min-height: 24px;
+      padding: 2px 12px;
+      border-radius: 999px;
+      background: var(--blue-soft);
+      color: var(--ink);
+      font-size: .72rem;
+      white-space: nowrap;
+    }
+
+    details:nth-child(5n + 2) .tag { background: var(--yellow); }
+    details:nth-child(5n + 3) .tag { background: var(--green); }
+    details:nth-child(5n + 4) .tag { background: var(--pink); }
+    details:nth-child(5n + 5) .tag { background: var(--peach); }
 
     .toggle {
       position: relative;
-      width: 18px;
-      height: 18px;
-      justify-self: end;
-      top: 2px;
+      width: 16px;
+      height: 16px;
     }
 
     .toggle::before,
@@ -201,8 +254,8 @@
       content: "";
       position: absolute;
       left: 2px;
-      top: 8px;
-      width: 14px;
+      top: 7px;
+      width: 12px;
       height: 1px;
       background: currentColor;
     }
@@ -215,107 +268,172 @@
     details[open] .toggle::after { transform: rotate(0); }
 
     .answer {
-      display: grid;
-      grid-template-columns: 64px minmax(0, 650px) 1fr;
-      gap: 18px;
-      padding: 0 8px 26px 0;
-      animation: reveal 170ms ease-out;
+      max-width: 570px;
+      padding: 4px 38px 28px 0;
+      animation: reveal 160ms ease-out;
     }
 
-    .answer-copy { grid-column: 2; }
-
-    .section-tag {
-      display: inline-block;
-      margin-bottom: 10px;
-      padding: 2px 7px;
-      color: var(--accent);
-      background: var(--accent-soft);
-      font-size: .65rem;
-      letter-spacing: .04em;
-      text-transform: uppercase;
+    .answer p {
+      margin: 0;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 1.05rem;
+      line-height: 1.68;
     }
-
-    .answer p { margin: 0; }
 
     .answer p + p {
-      margin-top: 12px;
+      margin-top: 14px;
       color: var(--muted);
-      font-size: .92rem;
     }
 
     .links {
       display: flex;
       flex-direction: column;
       align-items: flex-start;
-      gap: 7px;
-      margin-top: 16px;
-      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-      font-size: .72rem;
-      line-height: 1.45;
+      gap: 8px;
+      margin-top: 19px;
+      font-size: .82rem;
     }
 
     .links a {
-      color: var(--accent);
-      text-decoration-thickness: 1px;
+      color: var(--blue);
       text-underline-offset: 3px;
     }
 
     .accordion-media {
       display: grid;
-      gap: 18px;
-      margin-top: 22px;
+      gap: 20px;
+      margin-top: 24px;
     }
 
-    .accordion-media figure { margin: 0; }
+    figure { margin: 0; }
 
     .accordion-media img {
       display: block;
       width: 100%;
       height: auto;
-      border: 1px solid var(--line);
-      background: #fff;
+      border-radius: 2px;
+      background: #f0f2f6;
     }
 
-    .accordion-media figcaption {
-      margin-top: 7px;
+    figcaption {
+      margin-top: 8px;
       color: var(--muted);
-      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-      font-size: .68rem;
+      font-size: .75rem;
       line-height: 1.5;
     }
 
-    footer {
-      display: grid;
-      grid-template-columns: 168px minmax(0, 680px);
-      gap: 42px;
-      margin-top: 62px;
-      padding-top: 20px;
-      border-top: 1px solid var(--ink);
+    .unassigned {
+      margin-top: 28px;
+      padding: 18px;
+      border: 1px dashed var(--line);
       color: var(--muted);
-      font-size: .72rem;
-      line-height: 1.6;
+      font-size: .85rem;
     }
 
-    footer p { margin: 0; }
+    footer {
+      min-height: 430px;
+      padding: 74px 48px 38px;
+      color: #cfe0ff;
+      background: var(--blue);
+    }
+
+    .footer-inner {
+      width: min(100%, 720px);
+      margin-left: min(25vw, 345px);
+    }
+
+    .footer-grid {
+      display: grid;
+      grid-template-columns: 126px 1fr;
+      gap: 26px;
+    }
+
+    .footer-label {
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: .9rem;
+      font-style: italic;
+    }
+
+    .footer-links {
+      display: grid;
+      gap: 13px;
+    }
+
+    .footer-links a {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 14px;
+      align-items: center;
+      text-decoration: none;
+    }
+
+    .footer-links a::after {
+      content: "";
+      height: 1px;
+      background: rgba(255,255,255,.56);
+    }
+
+    .closing {
+      margin: 92px 0 0 152px;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 1.02rem;
+      font-style: italic;
+    }
+
+    .copyright {
+      display: flex;
+      justify-content: space-between;
+      gap: 20px;
+      margin: 28px 0 0 152px;
+      padding-top: 11px;
+      border-top: 1px solid rgba(255,255,255,.56);
+      font-size: .72rem;
+    }
 
     @keyframes reveal {
-      from { opacity: 0; transform: translateY(-4px); }
+      from { opacity: 0; transform: translateY(-3px); }
       to { opacity: 1; transform: translateY(0); }
     }
 
-    @media (max-width: 760px) {
-      body { background: var(--paper); }
-      .page { width: min(100% - 28px, 1060px); padding-top: 22px; }
-      .eyebrow { margin-bottom: 40px; }
-      header { grid-template-columns: 1fr; gap: 24px; }
-      h1 { font-size: clamp(2.55rem, 13.5vw, 4.4rem); }
-      .intro { grid-template-columns: 1fr; gap: 10px; margin: 25px 0 48px; }
-      .list-head { align-items: flex-end; }
-      .controls { gap: 12px; }
-      summary { grid-template-columns: 39px 1fr 21px; gap: 10px; padding: 19px 4px 18px 0; }
-      .answer { grid-template-columns: 39px minmax(0, 1fr); gap: 10px; padding: 0 4px 23px 0; }
-      .answer-copy { grid-column: 2; }
-      footer { grid-template-columns: 1fr; gap: 8px; }
+    @media (min-width: 980px) {
+      main { padding-left: 48px; }
+    }
+
+    @media (max-width: 780px) {
+      main { padding: 82px 22px 100px; }
+      .topbar { margin: 8px 0 0 8px; }
+      .eyebrow { margin-bottom: 30px; }
+      h1 { font-size: clamp(2.25rem, 11vw, 3.3rem); }
+      .intro { margin-top: 62px; }
+      .topic-controls { margin-top: 78px; }
+      .topic {
+        grid-template-columns: 40px minmax(0, 1fr);
+        column-gap: 12px;
+        padding: 32px 0 42px;
+      }
+      summary {
+        grid-template-columns: minmax(0, 1fr) 17px;
+        gap: 10px;
+        padding-right: 2px;
+      }
+      summary .tag { display: none; }
+      .answer { padding-right: 18px; }
+      footer { min-height: 390px; padding: 58px 22px 30px; }
+      .footer-inner { margin-left: 0; }
+      .footer-grid { grid-template-columns: 92px 1fr; gap: 18px; }
+      .closing, .copyright { margin-left: 110px; }
+    }
+
+    @media (max-width: 480px) {
+      .mark { width: 58px; }
+      .index-link { padding-inline: 16px; }
+      .topic {
+        grid-template-columns: 1fr;
+        gap: 9px;
+      }
+      .topic-number { padding: 0; }
+      .footer-grid { grid-template-columns: 1fr; }
+      .closing, .copyright { margin-left: 0; }
     }
 
     @media (prefers-reduced-motion: reduce) {
@@ -326,146 +444,192 @@
   </style>
 </head>
 <body>
-  <main class="page">
-    <p class="eyebrow" id="page-eyebrow"></p>
+  <nav class="topbar" aria-label="Primary">
+    <a class="mark" href="#top" aria-label="Anand Grandhi home">A.</a>
+    <a class="index-link" href="#topics">Topics</a>
+  </nav>
 
-    <header>
+  <main id="top">
+    <div class="column">
+      <p class="eyebrow" id="page-eyebrow"></p>
       <h1 id="page-title"></h1>
       <p class="meta" id="page-meta"></p>
-    </header>
+      <p class="intro" id="page-intro"></p>
 
-    <section class="intro" aria-labelledby="intro-label">
-      <p class="label" id="intro-label">The test</p>
-      <p id="page-intro"></p>
-    </section>
+      <div class="topic-controls" id="topics">
+        <span id="topic-count"></span>
+        <div class="controls" aria-label="Accordion controls">
+          <button type="button" id="open-all">Open all</button>
+          <button type="button" id="close-all">Close all</button>
+        </div>
+      </div>
 
-    <div class="list-head">
-      <span class="count" id="question-count"></span>
-      <div class="controls" aria-label="Accordion controls">
-        <button type="button" id="open-all">Open all</button>
-        <button type="button" id="close-all">Close all</button>
+      <div id="topic-list"></div>
+    </div>
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+      <div class="footer-grid">
+        <span class="footer-label">Explore</span>
+        <div class="footer-links" id="footer-topics"></div>
+      </div>
+      <p class="closing" id="page-footer"></p>
+      <div class="copyright">
+        <span>Last revised <span id="page-revised"></span></span>
+        <span>© 2026 Anand Grandhi</span>
       </div>
     </div>
-
-    <section class="questions" id="questions" aria-label="Questions for an AI tutor"></section>
-
-    <footer>
-      <p>Last revised<br><span id="page-revised"></span></p>
-      <p id="page-footer"></p>
-    </footer>
-  </main>
+  </footer>
 
   <script src="content.js"></script>
   <script>
     const content = window.AI_TUTOR_NOTES;
+    const topicList = document.getElementById("topic-list");
+    const footerTopics = document.getElementById("footer-topics");
 
-    document.getElementById('page-eyebrow').textContent = content.eyebrow;
-    document.getElementById('page-title').textContent = content.title;
-    document.getElementById('page-meta').innerHTML = content.meta;
-    document.getElementById('page-intro').textContent = content.intro;
-    document.getElementById('page-revised').textContent = content.revised;
-    document.getElementById('page-footer').textContent = content.footer;
-    document.getElementById('question-count').textContent =
-      content.questions.length + (content.questions.length === 1 ? ' question' : ' questions');
+    document.getElementById("page-eyebrow").textContent = content.eyebrow;
+    document.getElementById("page-title").innerHTML =
+      content.title.replace("better AI tutors", "<em>better AI tutors</em>");
+    document.getElementById("page-meta").innerHTML = content.meta;
+    document.getElementById("page-intro").textContent = content.intro;
+    document.getElementById("page-revised").textContent = content.revised;
+    document.getElementById("page-footer").textContent = content.footer;
+    document.getElementById("topic-count").textContent =
+      content.topics.length + " topics · " + content.questions.length + " questions";
 
-    const list = document.getElementById('questions');
-
-    content.questions.forEach((entry, index) => {
-      const details = document.createElement('details');
+    const buildQuestion = (entry) => {
+      const details = document.createElement("details");
       details.id = entry.id;
 
-      const summary = document.createElement('summary');
-      const number = document.createElement('span');
-      const question = document.createElement('span');
-      const toggle = document.createElement('span');
+      const summary = document.createElement("summary");
+      const question = document.createElement("span");
+      const tag = document.createElement("span");
+      const toggle = document.createElement("span");
 
-      number.className = 'number';
-      number.textContent = String(index + 1).padStart(2, '0');
-      question.className = 'question';
+      question.className = "question";
       question.textContent = entry.question;
-      toggle.className = 'toggle';
-      toggle.setAttribute('aria-hidden', 'true');
-
-      summary.append(number, question, toggle);
-
-      const answer = document.createElement('div');
-      const answerCopy = document.createElement('div');
-      const tag = document.createElement('span');
-
-      answer.className = 'answer';
-      answerCopy.className = 'answer-copy';
-      tag.className = 'section-tag';
+      tag.className = "tag";
       tag.textContent = entry.tag;
-      answerCopy.append(tag);
+      toggle.className = "toggle";
+      toggle.setAttribute("aria-hidden", "true");
+      summary.append(question, tag, toggle);
+
+      const answer = document.createElement("div");
+      answer.className = "answer";
 
       entry.answer.forEach((paragraph) => {
-        const p = document.createElement('p');
+        const p = document.createElement("p");
         p.textContent = paragraph;
-        answerCopy.append(p);
+        answer.append(p);
       });
 
       if (entry.links?.length) {
-        const links = document.createElement('div');
-        links.className = 'links';
+        const links = document.createElement("div");
+        links.className = "links";
         entry.links.forEach((item) => {
-          const a = document.createElement('a');
-          a.href = item.url;
-          a.textContent = item.label;
-          a.target = '_blank';
-          a.rel = 'noreferrer';
-          links.append(a);
+          const link = document.createElement("a");
+          link.href = item.url;
+          link.textContent = item.label + " ↗";
+          link.target = "_blank";
+          link.rel = "noreferrer";
+          links.append(link);
         });
-        answerCopy.append(links);
+        answer.append(links);
       }
 
       if (entry.images?.length) {
-        const media = document.createElement('div');
-        media.className = 'accordion-media';
+        const media = document.createElement("div");
+        media.className = "accordion-media";
 
         entry.images.forEach((item) => {
-          const figure = document.createElement('figure');
-          const img = document.createElement('img');
+          const figure = document.createElement("figure");
+          const img = document.createElement("img");
           img.src = item.src;
-          img.alt = item.alt || '';
-          img.loading = 'lazy';
-          img.decoding = 'async';
+          img.alt = item.alt || "";
+          img.loading = "lazy";
+          img.decoding = "async";
           figure.append(img);
 
           if (item.caption) {
-            const caption = document.createElement('figcaption');
+            const caption = document.createElement("figcaption");
             caption.textContent = item.caption;
             figure.append(caption);
           }
-
           media.append(figure);
         });
-
-        answerCopy.append(media);
+        answer.append(media);
       }
 
-      answer.append(answerCopy);
       details.append(summary, answer);
-      list.append(details);
+      return details;
+    };
+
+    const assigned = new Set();
+
+    content.topics.forEach((topic, index) => {
+      const section = document.createElement("section");
+      section.className = "topic";
+      section.id = topic.id;
+
+      const number = document.createElement("div");
+      number.className = "topic-number";
+      number.textContent = String(index + 1).padStart(2, "0");
+
+      const body = document.createElement("div");
+      const heading = document.createElement("h2");
+      const description = document.createElement("p");
+      const questions = document.createElement("div");
+
+      heading.textContent = topic.title;
+      description.className = "topic-description";
+      description.textContent = topic.description;
+      questions.className = "questions";
+
+      content.questions
+        .filter((entry) => topic.tags.includes(entry.tag))
+        .forEach((entry) => {
+          assigned.add(entry.id);
+          questions.append(buildQuestion(entry));
+        });
+
+      body.append(heading, description, questions);
+      section.append(number, body);
+      topicList.append(section);
+
+      const footerLink = document.createElement("a");
+      footerLink.href = "#" + topic.id;
+      footerLink.textContent = topic.title;
+      footerTopics.append(footerLink);
     });
 
-    const items = [...document.querySelectorAll('details')];
+    const unassigned = content.questions.filter((entry) => !assigned.has(entry.id));
+    if (unassigned.length) {
+      const warning = document.createElement("div");
+      warning.className = "unassigned";
+      warning.textContent =
+        unassigned.length + " question(s) need a matching topic tag in content.js.";
+      topicList.append(warning);
+    }
 
-    document.getElementById('open-all').addEventListener('click', () => {
-      items.forEach((item) => { item.open = true; });
+    const allDetails = [...document.querySelectorAll("details")];
+
+    document.getElementById("open-all").addEventListener("click", () => {
+      allDetails.forEach((item) => { item.open = true; });
     });
 
-    document.getElementById('close-all').addEventListener('click', () => {
-      items.forEach((item) => { item.open = false; });
+    document.getElementById("close-all").addEventListener("click", () => {
+      allDetails.forEach((item) => { item.open = false; });
     });
 
     const openFromHash = () => {
       if (!location.hash) return;
       const item = document.getElementById(location.hash.slice(1));
-      if (item?.tagName === 'DETAILS') item.open = true;
+      if (item?.tagName === "DETAILS") item.open = true;
     };
 
     openFromHash();
-    window.addEventListener('hashchange', openFromHash);
+    window.addEventListener("hashchange", openFromHash);
   </script>
 </body>
 </html>
