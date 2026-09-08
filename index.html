@@ -109,7 +109,7 @@
   </main>
   <footer><div class="footer-inner"><div class="footer-grid"><span class="footer-label">Explore</span><div class="footer-links" id="footer-topics"></div></div><p class="closing" id="page-footer"></p><div class="copyright"><span>Last revised <span id="page-revised"></span></span><span>© 2026 Anand Grandhi</span></div></div></footer>
   <script>
-    fetch("content.json")
+    fetch("content.json?v=" + Date.now(), { cache: "no-store" })
       .then(response => {
         if (!response.ok) throw new Error("Could not load the notes.");
         return response.json();
