@@ -96,22 +96,13 @@ content:
                 type: string
           - name: images
             label: Images
-            type: object
-            list:
-              collapsible:
-                collapsed: true
-                summary: "{caption}"
-            fields:
-              - name: src
-                label: Image
-                type: image
-              - name: alt
-                label: Image description
-                type: text
-                description: Describe the image for people using screen readers.
-              - name: caption
-                label: Caption
-                type: text
+            type: image
+            description: Upload one or several images for this answer.
+            options:
+              multiple:
+                max: 12
+              extensions: [jpg, jpeg, png, webp, gif]
+              rename: safe
 
 settings:
   content:
