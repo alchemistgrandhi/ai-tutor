@@ -25,6 +25,17 @@
     h1 em { color:var(--blue); font-weight:400; }
     .meta { max-width:520px; margin:30px 0 0; color:var(--muted); font-size:.92rem; line-height:1.65; }
     .intro { max-width:610px; margin:78px 0 0; padding-top:22px; border-top:1px solid var(--line); font-size:1.08rem; line-height:1.65; }
+    .topic-jump { padding:0 48px 42px; }
+    .topic-jump-inner { max-width:1060px; padding-top:22px; border-top:1px solid var(--line); }
+    .topic-jump-label { display:block; margin-bottom:15px; color:var(--muted); font-size:.76rem; }
+    .topic-jump-links { display:flex; flex-wrap:wrap; gap:8px; }
+    .topic-jump-links a { display:inline-flex; align-items:center; min-height:31px; padding:5px 13px; border-radius:999px; background:var(--blue-soft); color:var(--ink); font-size:.76rem; text-decoration:none; transition:transform 150ms ease,color 150ms ease; }
+    .topic-jump-links a:nth-child(5n + 2) { background:var(--yellow); }
+    .topic-jump-links a:nth-child(5n + 3) { background:var(--green); }
+    .topic-jump-links a:nth-child(5n + 4) { background:var(--pink); }
+    .topic-jump-links a:nth-child(5n + 5) { background:var(--peach); }
+    .topic-jump-links a:hover,.topic-jump-links a:focus-visible { color:var(--blue); transform:translateY(-1px); }
+    .topic-jump-links a:focus-visible { outline:2px solid var(--blue); outline-offset:2px; }
     .reading-desk { display:grid; grid-template-columns:minmax(430px,53%) minmax(390px,47%); align-items:start; border-top:1px solid var(--line); min-height:100vh; }
     .question-index { padding:64px 48px 120px; }
     .index-heading { display:flex; justify-content:space-between; gap:24px; margin-bottom:54px; color:var(--muted); font-size:.78rem; }
@@ -75,7 +86,8 @@
     .closing { margin:86px 0 0 152px; font-size:.98rem; font-style:italic; }
     .copyright { display:flex; justify-content:space-between; gap:20px; margin:28px 0 0 152px; padding-top:11px; border-top:1px solid rgba(255,255,255,.56); font-size:.7rem; }
     @media (max-width:900px) {
-      .intro-wrap { padding:88px 24px 90px; }
+      .intro-wrap { padding:88px 24px 70px; }
+      .topic-jump { padding:0 24px 34px; }
       .reading-desk { display:block; min-height:0; }
       .question-index { padding:52px 24px 90px; }
       .answer-side { position:fixed; inset:0; z-index:20; height:100dvh; border:0; visibility:hidden; opacity:0; transform:translateX(24px); transition:opacity 180ms ease,transform 180ms ease,visibility 180ms; }
@@ -99,6 +111,7 @@
 <body>
   <nav class="topbar" aria-label="Primary"><a class="mark" href="#top" aria-label="Anand Grandhi home">A.</a><a class="index-link" href="#topics">Topics</a></nav>
   <header class="intro-wrap" id="top"><p class="eyebrow" id="page-eyebrow"></p><h1 id="page-title"></h1><p class="meta" id="page-meta"></p><p class="intro" id="page-intro"></p></header>
+  <nav class="topic-jump" aria-label="Jump to a topic"><div class="topic-jump-inner"><span class="topic-jump-label">Jump to a topic</span><div class="topic-jump-links" id="top-topics"></div></div></nav>
   <main class="reading-desk" id="topics">
     <div class="question-index"><div class="index-heading"><span>Topics and questions</span><span id="topic-count"></span></div><div id="topic-list"></div></div>
     <aside class="answer-side" id="answer-side" aria-label="Selected answer"><div class="answer-panel" id="answer-panel"><article class="answer-inner">
@@ -115,7 +128,7 @@
         return response.json();
       })
       .then(content => {
-    const topicList=document.getElementById("topic-list"),footerTopics=document.getElementById("footer-topics"),answerSide=document.getElementById("answer-side"),answerPanel=document.getElementById("answer-panel"),answerTitle=document.getElementById("answer-title"),answerCopy=document.getElementById("answer-copy"),answerLinks=document.getElementById("answer-links"),answerMedia=document.getElementById("answer-media"),previousButton=document.getElementById("previous-answer"),nextButton=document.getElementById("next-answer");
+    const topicList=document.getElementById("topic-list"),footerTopics=document.getElementById("footer-topics"),topTopics=document.getElementById("top-topics"),answerSide=document.getElementById("answer-side"),answerPanel=document.getElementById("answer-panel"),answerTitle=document.getElementById("answer-title"),answerCopy=document.getElementById("answer-copy"),answerLinks=document.getElementById("answer-links"),answerMedia=document.getElementById("answer-media"),previousButton=document.getElementById("previous-answer"),nextButton=document.getElementById("next-answer");
     const mobileLayout=()=>window.matchMedia("(max-width: 900px)").matches; let activeIndex=0;
     document.getElementById("page-eyebrow").textContent=content.eyebrow; document.getElementById("page-title").innerHTML=content.title.replace("better AI tutors","<em>better AI tutors</em>"); document.getElementById("page-meta").innerHTML=content.meta; document.getElementById("page-intro").textContent=content.intro; document.getElementById("page-revised").textContent=content.revised; document.getElementById("page-footer").textContent=content.footer; document.getElementById("topic-count").textContent=content.topics.length+" topics · "+content.questions.length+" questions";
     const questionButtons=[],assigned=new Set();
@@ -124,7 +137,7 @@
       const number=document.createElement("div"); number.className="topic-number"; number.textContent=String(index+1).padStart(2,"0");
       const body=document.createElement("div"),heading=document.createElement("h2"),description=document.createElement("p"),questions=document.createElement("div"); heading.textContent=topic.title; description.className="topic-description"; description.textContent=topic.description; questions.className="questions";
       content.questions.filter(entry=>topic.tags.includes(entry.tag)).forEach(entry=>{ assigned.add(entry.id); const button=document.createElement("button"); button.type="button"; button.className="question-button"; button.dataset.questionId=entry.id; button.setAttribute("aria-selected","false"); button.innerHTML='<span class="question-text"></span><span class="tag"></span><span class="arrow" aria-hidden="true">→</span>'; button.querySelector(".question-text").textContent=entry.question; button.querySelector(".tag").textContent=entry.tag; button.addEventListener("click",()=>selectQuestion(content.questions.indexOf(entry),true)); questionButtons.push(button); questions.append(button); });
-      body.append(heading,description,questions); section.append(number,body); topicList.append(section); const footerLink=document.createElement("a"); footerLink.href="#"+topic.id; footerLink.textContent=topic.title; footerTopics.append(footerLink);
+      body.append(heading,description,questions); section.append(number,body); topicList.append(section); const footerLink=document.createElement("a"); footerLink.href="#"+topic.id; footerLink.textContent=topic.title; footerTopics.append(footerLink); const topLink=document.createElement("a"); topLink.href="#"+topic.id; topLink.textContent=String(index+1).padStart(2,"0")+" · "+topic.title; topTopics.append(topLink);
     });
     const unassigned=content.questions.filter(entry=>!assigned.has(entry.id)); if(unassigned.length){ const warning=document.createElement("div"); warning.className="unassigned"; warning.textContent=unassigned.length+" question(s) need a matching topic tag in content.js."; topicList.append(warning); }
     function selectQuestion(index,userInitiated=false){
