@@ -29,12 +29,51 @@
 */
 
 window.AI_TUTOR_NOTES = {
-  eyebrow: "Working atlas of an AI tutor / 01",
-  title: "The questions every AI tutor should answer",
-  meta: "K–12, with exam preparation in mind.<br>Working list. Not complete.",
+  eyebrow: "Anand Grandhi / Working notes",
+  title: "Notes on building better AI tutors.",
+  meta: "K–12 learning, with exam preparation in mind.<br>A working map, not a finished theory.",
   intro: "A tutor can know the syllabus and still know almost nothing about the student. Before it explains, recommends or encourages, I want to know whether it can answer these questions.",
   revised: "September 2026",
-  footer: "This is a working list. It should change when these questions are tested against real students, not when the wording starts to feel finished.",
+  footer: "The tutor should change its methods until the student can think without it.",
+
+  topics: [
+    {
+      id: "direction",
+      title: "Goals and direction",
+      description: "Where is the student trying to go, and what would honest progress towards that goal look like?",
+      tags: ["Goal", "Trajectory"]
+    },
+    {
+      id: "understanding",
+      title: "Understanding the learner",
+      description: "What does the evidence actually tell us about knowledge, confidence and misconceptions?",
+      tags: ["Knowledge", "Calibration", "Diagnosis", "Student model", "Prerequisites"]
+    },
+    {
+      id: "teaching",
+      title: "Choosing how to teach",
+      description: "The next explanation is not always the next best action.",
+      tags: ["Difficulty", "Decision", "Judgement", "Explanation"]
+    },
+    {
+      id: "memory",
+      title: "Memory over time",
+      description: "Learning has to survive beyond the conversation in which it first appeared.",
+      tags: ["Memory"]
+    },
+    {
+      id: "engagement",
+      title: "Effort and engagement",
+      description: "Is the student thinking, avoiding, persisting, asking for help—or merely completing?",
+      tags: ["Engagement", "Learning behaviour", "Motivation"]
+    },
+    {
+      id: "relationship",
+      title: "Relationship and responsibility",
+      description: "What should the tutor notice, remember, question and hand back to a human?",
+      tags: ["Relationship", "Boundary", "Uncertainty"]
+    }
+  ],
 
   questions: [
     {
