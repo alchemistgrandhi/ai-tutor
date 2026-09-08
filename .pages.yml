@@ -1,0 +1,123 @@
+media:
+  input: images
+  output: images
+  rename: safe
+  categories: [image]
+
+content:
+  - name: tutor-notes
+    label: AI Tutor Notes
+    type: file
+    path: content.json
+    format: json
+    fields:
+      - name: eyebrow
+        label: Small heading
+        type: string
+      - name: title
+        label: Page title
+        type: string
+        required: true
+      - name: meta
+        label: Subtitle
+        type: text
+      - name: intro
+        label: Introduction
+        type: text
+      - name: revised
+        label: Last revised
+        type: string
+      - name: footer
+        label: Closing thought
+        type: text
+      - name: topics
+        label: Topics
+        type: object
+        list:
+          collapsible:
+            collapsed: true
+            summary: "{title}"
+        fields:
+          - name: id
+            label: ID
+            type: string
+            required: true
+            description: Lowercase words joined with hyphens.
+          - name: title
+            label: Topic title
+            type: string
+            required: true
+          - name: description
+            label: Short description
+            type: text
+          - name: tags
+            label: Question tags in this topic
+            type: string
+            list: true
+      - name: questions
+        label: Questions and answers
+        type: object
+        list:
+          collapsible:
+            collapsed: true
+            summary: "{question}"
+        fields:
+          - name: id
+            label: ID
+            type: string
+            required: true
+            description: Lowercase words joined with hyphens. Keep existing IDs unchanged.
+          - name: tag
+            label: Topic tag
+            type: string
+            required: true
+          - name: question
+            label: Question
+            type: text
+            required: true
+          - name: answer
+            label: Answer paragraphs
+            type: text
+            list: true
+            required: true
+          - name: links
+            label: Links
+            type: object
+            list:
+              collapsible:
+                collapsed: true
+                summary: "{label}"
+            fields:
+              - name: label
+                label: Link text
+                type: string
+              - name: url
+                label: Web address
+                type: string
+          - name: images
+            label: Images
+            type: object
+            list:
+              collapsible:
+                collapsed: true
+                summary: "{caption}"
+            fields:
+              - name: src
+                label: Image
+                type: image
+              - name: alt
+                label: Image description
+                type: text
+                description: Describe the image for people using screen readers.
+              - name: caption
+                label: Caption
+                type: text
+
+settings:
+  content:
+    merge: direct
+  commit:
+    templates:
+      create: "Add {path}"
+      update: "Update {path}"
+      delete: "Delete {path}"
