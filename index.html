@@ -108,9 +108,14 @@
     </article></div></aside>
   </main>
   <footer><div class="footer-inner"><div class="footer-grid"><span class="footer-label">Explore</span><div class="footer-links" id="footer-topics"></div></div><p class="closing" id="page-footer"></p><div class="copyright"><span>Last revised <span id="page-revised"></span></span><span>© 2026 Anand Grandhi</span></div></div></footer>
-  <script src="content.js"></script>
   <script>
-    const content=window.AI_TUTOR_NOTES,topicList=document.getElementById("topic-list"),footerTopics=document.getElementById("footer-topics"),answerSide=document.getElementById("answer-side"),answerPanel=document.getElementById("answer-panel"),answerTitle=document.getElementById("answer-title"),answerCopy=document.getElementById("answer-copy"),answerLinks=document.getElementById("answer-links"),answerMedia=document.getElementById("answer-media"),previousButton=document.getElementById("previous-answer"),nextButton=document.getElementById("next-answer");
+    fetch("content.json")
+      .then(response => {
+        if (!response.ok) throw new Error("Could not load the notes.");
+        return response.json();
+      })
+      .then(content => {
+    const topicList=document.getElementById("topic-list"),footerTopics=document.getElementById("footer-topics"),answerSide=document.getElementById("answer-side"),answerPanel=document.getElementById("answer-panel"),answerTitle=document.getElementById("answer-title"),answerCopy=document.getElementById("answer-copy"),answerLinks=document.getElementById("answer-links"),answerMedia=document.getElementById("answer-media"),previousButton=document.getElementById("previous-answer"),nextButton=document.getElementById("next-answer");
     const mobileLayout=()=>window.matchMedia("(max-width: 900px)").matches; let activeIndex=0;
     document.getElementById("page-eyebrow").textContent=content.eyebrow; document.getElementById("page-title").innerHTML=content.title.replace("better AI tutors","<em>better AI tutors</em>"); document.getElementById("page-meta").innerHTML=content.meta; document.getElementById("page-intro").textContent=content.intro; document.getElementById("page-revised").textContent=content.revised; document.getElementById("page-footer").textContent=content.footer; document.getElementById("topic-count").textContent=content.topics.length+" topics · "+content.questions.length+" questions";
     const questionButtons=[],assigned=new Set();
@@ -130,6 +135,10 @@
     function closeAnswer(){answerSide.classList.remove("is-open");document.body.classList.remove("panel-open");questionButtons.find(button=>button.dataset.questionId===content.questions[activeIndex].id)?.focus();}
     previousButton.addEventListener("click",()=>selectQuestion(activeIndex-1)); nextButton.addEventListener("click",()=>selectQuestion(activeIndex+1)); document.getElementById("close-answer").addEventListener("click",closeAnswer); document.addEventListener("keydown",event=>{if(event.key==="Escape"&&mobileLayout()&&answerSide.classList.contains("is-open"))closeAnswer();});
     const hashEntry=content.questions.findIndex(entry=>entry.id===location.hash.slice(1)); selectQuestion(hashEntry>=0?hashEntry:0);
+      })
+      .catch(error => {
+        document.getElementById("topic-list").textContent = error.message;
+      });
   </script>
 </body>
 </html>
