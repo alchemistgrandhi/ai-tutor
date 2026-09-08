@@ -508,6 +508,98 @@ body { color:var(--ink); font-size:16px; }
 .investigation .idea strong, .quick-links span { font-weight:500; }
 .navlinks a, .section-head p, .work-item p,
 .role .title, .layer .detail { color:var(--muted); }
+
+/* Standardized type scale */
+:root{
+  --text-xs:12px;
+  --text-sm:13px;
+  --text-md:16px;
+  --text-lg:18px;
+  --title-sm:26px;
+  --title-md:42px;
+  --title-lg:76px;
+}
+
+body{
+  font-size:var(--text-md);
+  line-height:1.58;
+}
+
+.hero h1,
+h1{
+  font-size:clamp(44px,5.2vw,var(--title-lg));
+  line-height:1.04;
+  letter-spacing:-0.055em;
+  font-weight:400;
+}
+
+.section-head h2,
+.simple-link-section h2,
+.arch-copy h2,
+.footer-big,
+h2{
+  font-size:clamp(32px,3.6vw,var(--title-md));
+  line-height:1.08;
+  letter-spacing:-0.05em;
+  font-weight:400;
+}
+
+.work-item h3,
+.question h3,
+.investigation h3,
+.quick-links span,
+h3{
+  font-size:17px;
+  line-height:1.35;
+  letter-spacing:-0.02em;
+  font-weight:500;
+}
+
+.hero-copy,
+.hero-copy p,
+.section-head p,
+.simple-link-section p,
+.arch-copy p,
+.work-item p,
+.role .title,
+.investigation .idea{
+  font-size:var(--text-md);
+  line-height:1.72;
+}
+
+.navlinks a,
+.brand,
+.text-link,
+.work-item .label,
+.role .org,
+.reading-links a{
+  font-size:var(--text-sm);
+  line-height:1.45;
+  font-weight:500;
+}
+
+.section-kicker,
+.hero-note,
+.work-item .meta,
+.role .date,
+.quick-links small,
+.qnum{
+  font-size:var(--text-xs);
+  line-height:1.55;
+  font-weight:500;
+}
+
+.history-intro{
+  font-size:var(--title-sm);
+  line-height:1.25;
+  letter-spacing:-0.035em;
+}
+
+.book{
+  font-size:11px;
+  line-height:1.3;
+}
+
 </style>
 </head>
 <body>
