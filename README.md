@@ -11,6 +11,21 @@ An editable accordion website. The writing is kept separate from the page design
 
 The public website updates automatically after GitHub Pages finishes publishing.
 
+## Add or edit a topic
+
+Topics are listed near the top of `content.js`. Each topic has a title, a short description, and a list of tags:
+
+```js
+{
+  id: "teaching",
+  title: "Choosing how to teach",
+  description: "The next explanation is not always the next best action.",
+  tags: ["Difficulty", "Decision", "Judgement", "Explanation"]
+}
+```
+
+A question appears under the topic whose `tags` list contains that question's `tag`. This lets you move a question by changing only its tag.
+
 ## Add a question
 
 In `content.js`, add another item inside `questions`:
