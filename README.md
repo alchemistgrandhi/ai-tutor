@@ -1,90 +1,88 @@
-# The questions every AI tutor should answer
+# Notes on Building Better AI Tutors
 
-An editable accordion website. The writing is kept separate from the page design.
+A public research and design notebook about what it takes to build a complete AI tutor for difficult learning goals—including IIT-JEE, NEET, UPSC, CAT and K–12 learning.
 
-## Edit the writing
+**Website:** https://anandgrandhi.github.io/ai-tutor/  
+**Visual editor:** https://app.pagescms.org/anandgrandhi/ai-tutor/main
 
-1. Open `content.js` on GitHub.
-2. Click the pencil icon (**Edit this file**).
-3. Change the page title, introduction, revision date, or any question and answer.
-4. Click **Commit changes**.
+## Project direction
 
-The public website updates automatically after GitHub Pages finishes publishing.
+This is not a chatbot essay. The project studies the full tutoring system: subject and exam models, learner modelling, diagnosis, pedagogical decisions, motivation, memory, multimodal content, relationship, parent and teacher layers, evaluation, safety, architecture and product moat.
 
-## Add or edit a topic
+## Repository structure
 
-Topics are listed near the top of `content.js`. Each topic has a title, a short description, and a list of tags:
+- `index.html` — portfolio homepage
+- `ai-tutors.html` — AI tutor notes interface
+- `content.json` — source of truth for the editable notes
+- `.pages.yml` — PageCMS configuration
+- `images/` — images used in notes
+- `archive/` — recovered source material and editorial plans
+- `content.js` — legacy copy retained for reference; the live page does not load it
 
-```js
+## Edit the notes
+
+The easiest route is the [PageCMS editor](https://app.pagescms.org/anandgrandhi/ai-tutor/main). Open **AI Tutor Notes**, edit the content and save. PageCMS commits the change to the `main` branch.
+
+You can also edit `content.json` directly on GitHub. The public website updates after GitHub Pages publishes the commit.
+
+## Content model
+
+Each topic groups questions using tags:
+
+```json
 {
-  id: "teaching",
-  title: "Choosing how to teach",
-  description: "The next explanation is not always the next best action.",
-  tags: ["Difficulty", "Decision", "Judgement", "Explanation"]
+  "id": "teaching",
+  "title": "Choosing how to teach",
+  "description": "The next explanation is not always the next best action.",
+  "tags": ["Difficulty", "Decision", "Judgement", "Explanation"]
 }
 ```
 
-A question appears under the topic whose `tags` list contains that question's `tag`. This lets you move a question by changing only its tag.
+Each question follows this shape:
 
-## Add a question
-
-In `content.js`, add another item inside `questions`:
-
-```js
+```json
 {
-  id: "short-unique-name",
-  tag: "Topic",
-  question: "The question readers will see",
-  answer: [
+  "id": "short-unique-name",
+  "tag": "Decision",
+  "question": "The question readers will see",
+  "answer": [
     "The first paragraph.",
     "An optional second paragraph."
+  ],
+  "links": [
+    {
+      "label": "Optional link title",
+      "url": "https://example.com"
+    }
+  ],
+  "images": [
+    {
+      "src": "images/example-diagram.png",
+      "alt": "Describe what the image shows",
+      "caption": "Optional caption"
+    }
   ]
-},
+}
 ```
 
-The page creates the number and accordion automatically.
+A question appears under the topic whose `tags` list contains the question's `tag`. Keep existing IDs stable because they are used as URL anchors.
 
-## Add an image to an answer
+## Recovered research archive
 
-1. Open the `images` folder on GitHub.
-2. Choose **Add file → Upload files** and upload the image.
-3. Add this inside the relevant question in `content.js`:
+The recovered material, overlap with the live notes and recommended publishing order are documented in:
 
-```js
-images: [
-  {
-    src: "images/your-image.jpg",
-    alt: "Describe what the image shows",
-    caption: "Optional caption"
-  }
-]
-```
+- [Recovered material — September 2026](archive/recovered-material-2026-09-09.md)
 
-You may add several image objects inside the `images` list. If an answer has no image, leave the `images` section out.
+The current editorial priority is to publish the **architecture spine** first, then the **tutoring decision loop**, followed by gameful design, role/personality, the parent layer and multimodal teaching.
 
-## Add a link
+## Design system
 
-Add this inside the relevant question:
+The site uses Inter throughout.
 
-```js
-links: [
-  {
-    label: "Name readers will see",
-    url: "https://example.com"
-  }
-]
-```
+- Ink: `#34384c`
+- Muted: `#6f7485`
+- Faint: `#9aa0ad`
+- Border: `#e3e6ec`
+- Blue: `#0b63ff`
 
-## Change the design
-
-The colors, type, spacing, and accordion layout are in `index.html`. Most routine updates do not require changing it.
-
-## Publish with GitHub Pages
-
-In the repository, open **Settings → Pages**. Under **Build and deployment**, choose **Deploy from a branch**, select `main` and `/ (root)`, then save.
-
-Your stable URL will have the form:
-
-`https://YOUR-GITHUB-USERNAME.github.io/ai-tutor-questions/`
-
-You can also connect a custom domain from the same Pages settings.
+The visual language is light, spacious and restrained: thin dividers, white space and regular-to-medium type weights.
