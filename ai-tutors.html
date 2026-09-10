@@ -3,213 +3,173 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="A public research vault on building complete AI tutors.">
+  <meta name="description" content="Working research notes on building better AI tutors.">
   <title>Notes on building better AI tutors — Anand Grandhi</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&display=swap" rel="stylesheet">
   <style>
-    :root {
-      --ink:#34384c; --muted:#6f7485; --faint:#9aa0ad; --border:#e3e6ec;
-      --blue:#0b63ff; --link:#0969da; --paper:#fff; --soft:#f6f7f9;
-      --blue-soft:#edf4ff; --yellow-soft:#fff8dc; --green-soft:#edf8f3; --pink-soft:#fff0f3;
-      --yellow:#aa7600; --green:#187b62; --pink:#bb3158;
-    }
+    :root { --blue:#0b63ff; --ink:#34384c; --muted:#6f7485; --faint:#9aa0ad; --line:#e3e6ec; --paper:#fff; --panel:#f7f8fb; --blue-soft:#e7efff; --yellow:#fff4cf; --green:#e8f4dd; --pink:#f4e1fb; }
     * { box-sizing:border-box; }
-    html { scroll-behavior:smooth; }
-    body { margin:0; color:var(--ink); background:var(--paper); font-family:Inter,ui-sans-serif,system-ui,sans-serif; font-weight:400; }
-    a { color:var(--link); text-decoration-thickness:1px; text-underline-offset:3px; }
-    button { font:inherit; }
+    html { background:var(--paper); scroll-behavior:smooth; }
+    body { margin:0; color:var(--ink); background:var(--paper); font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; font-size:16px; line-height:1.58; -webkit-font-smoothing:antialiased; }
+    button,a { font:inherit; } a { color:inherit; }
+    .topbar { display:inline-flex; margin:12px 0 0 12px; background:rgba(255,255,255,.92); border-radius:7px; overflow:hidden; }
+    .mark,.index-link { display:grid; min-height:56px; place-items:center; text-decoration:none; }
+    .mark { width:70px; color:var(--blue); font-size:22px; font-weight:500; letter-spacing:-.08em; }
+    .index-link { padding:0 24px 0 18px; color:var(--muted); font-size:13px; }
+    .index-link:hover,.index-link:focus-visible { color:var(--blue); }
+    .intro-wrap { max-width:770px; padding:118px 48px 104px; }
+    .eyebrow { margin:0 0 42px; color:var(--muted); font-size:12px; }
+    h1 { max-width:720px; margin:0; font-size:clamp(40px,4.5vw,62px); font-weight:400; letter-spacing:-.055em; line-height:1.08; }
+    h1 em { color:var(--blue); font-style:normal; }
+    .meta { max-width:570px; margin:30px 0 0; color:var(--muted); font-size:16px; line-height:1.72; }
+    .intro { max-width:640px; margin:74px 0 0; padding-top:22px; border-top:1px solid var(--line); font-size:16px; line-height:1.72; }
+    .topic-jump { padding:0 48px 42px; }
+    .topic-jump-inner { max-width:1060px; padding-top:22px; border-top:1px solid var(--line); }
+    .topic-jump-label { display:block; margin-bottom:14px; color:var(--muted); font-size:12px; }
+    .topic-jump-links { display:flex; flex-wrap:wrap; gap:8px; }
+    .topic-jump-links a { padding:5px 12px; background:var(--blue-soft); border-radius:999px; font-size:12px; text-decoration:none; }
+    .topic-jump-links a:nth-child(2) { background:var(--yellow); }
+    .topic-jump-links a:hover,.topic-jump-links a:focus-visible { color:var(--blue); }
+    .reading-desk { display:grid; grid-template-columns:minmax(420px,47%) minmax(430px,53%); align-items:start; min-height:100vh; border-top:1px solid var(--line); }
+    .question-index { padding:64px 48px 120px; }
+    .index-heading { display:flex; justify-content:space-between; gap:16px; margin-bottom:50px; color:var(--muted); font-size:12px; }
+    .topic { display:grid; grid-template-columns:50px minmax(0,1fr); gap:18px; padding:34px 0 48px; border-top:1px solid var(--line); scroll-margin-top:20px; }
+    .topic-number { padding-top:4px; color:var(--faint); font-size:12px; font-variant-numeric:tabular-nums; }
+    .topic h2 { margin:0; font-size:28px; font-weight:400; letter-spacing:-.04em; line-height:1.18; }
+    .topic-description { max-width:500px; margin:9px 0 25px; color:var(--muted); font-size:15px; line-height:1.55; }
+    .questions { border-top:1px solid var(--line); }
+    .question-button { display:grid; grid-template-columns:minmax(0,1fr) auto 18px; gap:12px; align-items:center; width:100%; min-height:64px; padding:14px 4px 14px 0; border:0; border-bottom:1px solid var(--line); color:var(--ink); background:transparent; text-align:left; cursor:pointer; }
+    .question-button:hover,.question-button:focus-visible,.question-button[aria-selected="true"] { color:var(--blue); }
+    .question-button:focus-visible { outline:2px solid var(--blue); outline-offset:3px; }
+    .question-text { font-size:16px; line-height:1.45; }
+    .tag { display:inline-flex; padding:3px 10px; background:var(--blue-soft); border-radius:999px; color:var(--ink); font-size:12px; white-space:nowrap; }
+    .question-button:nth-child(2) .tag { background:var(--yellow); }
+    .arrow { font-size:18px; transition:transform 150ms ease; }
+    .question-button[aria-selected="true"] .arrow { transform:translateX(3px); }
+    .answer-side { position:sticky; top:0; height:100vh; border-left:1px solid var(--line); background:var(--panel); }
+    .answer-panel { height:100%; overflow-y:auto; overscroll-behavior:contain; scrollbar-gutter:stable; }
+    .answer-inner { max-width:760px; min-height:100%; padding:64px clamp(34px,4.3vw,72px) 58px; }
+    .answer-top { display:flex; align-items:center; justify-content:space-between; gap:18px; margin-bottom:58px; }
+    .answer-position { color:var(--muted); font-size:12px; }
+    .close-answer { display:none; border:0; padding:8px; color:var(--ink); background:transparent; cursor:pointer; }
+    .answer-tag { margin-bottom:20px; }
+    .answer-title { margin:0 0 34px; font-size:clamp(30px,2.7vw,42px); font-weight:400; letter-spacing:-.05em; line-height:1.16; }
+    .answer-copy > p { margin:0; font-size:16px; line-height:1.72; }
+    .answer-copy > p + p { margin-top:20px; }
+    .answer-nav { display:flex; justify-content:space-between; gap:16px; margin-top:66px; padding-top:18px; border-top:1px solid var(--line); }
+    .answer-nav button { border:0; padding:6px 0; color:var(--muted); background:transparent; font-size:13px; cursor:pointer; }
+    .answer-nav button:hover,.answer-nav button:focus-visible { color:var(--blue); }
+    .answer-nav button:disabled { visibility:hidden; }
+    .loading { color:var(--muted); }
+    .note-error { padding:16px; border-left:2px solid var(--blue); color:var(--muted); }
 
-    .vault-bar { border-bottom:1px solid var(--border); display:grid; grid-template-columns:minmax(250px,1fr) auto; gap:24px; align-items:end; padding:22px clamp(18px,4vw,48px) 18px; }
-    .vault-kicker { color:var(--faint); font-size:11px; letter-spacing:.08em; margin-bottom:6px; text-transform:uppercase; }
-    .vault-title { color:var(--ink); font-size:18px; font-weight:500; letter-spacing:-.02em; margin:0; text-decoration:none; }
-    .vault-subtitle { color:var(--muted); font-size:12px; margin-top:4px; }
-    .vault-index { display:flex; flex-wrap:wrap; gap:8px; justify-content:flex-end; }
-    .note-tab { appearance:none; background:transparent; border:1px solid var(--border); border-radius:999px; color:var(--muted); cursor:pointer; font-size:12px; padding:6px 10px; }
-    .note-tab:hover,.note-tab.active { background:var(--soft); color:var(--ink); }
-    .note-tab.active { border-color:#cbd5e8; }
-
-    .note-sheet { display:grid; gap:36px; grid-template-columns:minmax(0,1fr) 230px; max-width:1120px; margin:0 auto; padding:32px clamp(18px,4vw,48px) 64px; }
-    .note-main { min-width:0; }
-    .note-breadcrumbs,.note-property-key,.note-small { color:var(--muted); font-size:12px; line-height:1.45; }
-    .note-breadcrumbs { margin-bottom:22px; }
-    h1 { font-size:clamp(30px,4vw,43px); font-weight:500; letter-spacing:-.035em; line-height:1.08; margin:0 0 22px; }
-    h2 { font-size:21px; font-weight:500; letter-spacing:-.018em; line-height:1.3; margin:32px 0 12px; }
-    h3 { font-size:16px; font-weight:500; line-height:1.4; margin:22px 0 8px; }
-    p,li,dd,dt,td,th { font-size:15px; line-height:1.58; }
-    p { margin:8px 0; }
-    ul,ol { margin:8px 0; padding-left:22px; }
-    li+li { margin-top:5px; }
-    strong { font-weight:500; }
-    hr { border:0; border-top:1px solid var(--border); margin:28px 0; }
-    img { height:auto; max-width:100%; }
-    table { border-collapse:collapse; display:block; margin:15px 0 22px; max-width:100%; overflow:auto; width:max-content; }
-    th,td { border-bottom:1px solid var(--border); padding:9px 16px 9px 0; text-align:left; vertical-align:top; }
-    th { font-size:12px; color:var(--muted); font-weight:500; }
-    code { background:var(--soft); border-radius:3px; font-size:.88em; padding:1px 4px; }
-    pre { background:var(--soft); border-left:2px solid var(--border); overflow:auto; padding:14px 16px; }
-    pre code { background:none; padding:0; }
-
-    .note-properties { border-bottom:1px solid var(--border); border-top:1px solid var(--border); display:grid; gap:8px 18px; grid-template-columns:92px 1fr; margin-bottom:28px; padding:15px 0; }
-    .note-property-value { display:flex; flex-wrap:wrap; gap:6px 10px; font-size:13px; line-height:1.45; }
-    .note-tag { background:var(--soft); border:1px solid var(--border); border-radius:999px; color:var(--muted); padding:1px 8px; }
-    #note-content>blockquote:first-child { border-bottom:1px solid var(--border); border-top:1px solid var(--border); color:var(--muted); margin:0 0 28px; padding:14px 0; }
-    #note-content>blockquote:first-child p { font-size:13px; }
-    #note-content>blockquote:not(:first-child) { background:var(--blue-soft); border:0; margin:18px 0; padding:15px 18px 16px; }
-    .note-section { margin:0; }
-    .note-section.fragment { border-left:2px solid var(--border); margin:18px 0 24px 8px; padding-left:18px; }
-    .note-section.fragment h2 { margin-top:0; }
-    .note-section.callout { margin:22px 0; padding:4px 18px 17px; }
-    .note-section.callout-blue { background:var(--blue-soft); }
-    .note-section.callout-yellow { background:var(--yellow-soft); }
-    .note-section.callout-green { background:var(--green-soft); }
-    .note-section.callout-pink { background:var(--pink-soft); }
-    .note-section.callout-blue h2 { color:var(--blue); }
-    .note-section.callout-yellow h2 { color:var(--yellow); }
-    .note-section.callout-green h2 { color:var(--green); }
-    .note-section.callout-pink h2 { color:var(--pink); }
-    .note-section.update { border-top:1px solid var(--border); margin-top:28px; padding-top:8px; }
-    .note-section.update::before { color:var(--faint); content:"added while investigating the diagnostic stack"; display:block; font-size:12px; margin-top:2px; }
-    .note-section.source-section ul { list-style:none; padding:0; }
-    .note-section.source-section li { border-bottom:1px solid var(--border); padding:10px 0 11px; }
-    .note-section.open-loops li { list-style:none; margin-left:-20px; padding-left:26px; position:relative; }
-    .note-section.open-loops li::before { color:var(--faint); content:"○"; left:0; position:absolute; }
-
-    .note-side { border-left:1px solid var(--border); min-width:0; padding-left:22px; }
-    .note-side h2 { font-size:15px; margin:3px 0 12px; }
-    .note-side-section { border-bottom:1px solid var(--border); margin-bottom:22px; padding:0 0 22px; }
-    .note-link-list { list-style:none; margin:0; padding:0; }
-    .note-link-list li { font-size:13px; line-height:1.4; margin:0; padding:6px 0; }
-    .note-link-list li::before { color:var(--faint); content:"↗"; display:inline-block; margin-right:7px; }
-    .note-link-list button { background:none; border:0; color:var(--link); cursor:pointer; padding:0; text-align:left; text-decoration:underline; text-decoration-thickness:1px; text-underline-offset:3px; }
-    .note-mention { border-left:1px solid var(--border); color:var(--muted); font-size:12px; line-height:1.48; margin:10px 0 0 5px; padding-left:12px; }
-    .toc-link { color:var(--muted); text-decoration:none; }
-    .toc-link:hover { color:var(--link); }
-    .loading { color:var(--muted); font-size:14px; padding:30px 0; }
-    .placeholder { border-left:2px solid var(--border); margin:18px 0 24px 8px; padding-left:18px; }
-    .placeholder p:first-child { font-size:18px; }
-
-    @media(max-width:760px) {
-      .vault-bar { grid-template-columns:1fr; }
-      .vault-index { justify-content:flex-start; }
-      .note-sheet { grid-template-columns:1fr; }
-      .note-side { border-left:0; border-top:1px solid var(--border); padding-left:0; padding-top:24px; }
+    /* Note-taking widget inside the side panel */
+    .answer-side { background:var(--panel); }
+    .answer-inner { max-width:760px; background:var(--paper); }
+    .answer-top { margin-bottom:34px; }
+    .answer-title { margin-bottom:24px; }
+    .research-note { color:var(--ink); }
+    .research-note > blockquote:first-child {
+      margin:0 0 26px; padding:14px 0; border:0; border-top:1px solid var(--line);
+      border-bottom:1px solid var(--line); background:transparent; color:var(--muted);
     }
-    @media(max-width:420px) {
-      .note-sheet { padding-inline:16px; }
-      .note-properties { grid-template-columns:1fr; gap:3px; }
-    }
+    .research-note > blockquote:first-child p { margin:0; font-size:12px; line-height:1.55; }
+    .research-note h2 { margin:30px 0 11px; font-size:21px; font-weight:500; letter-spacing:-.025em; line-height:1.28; }
+    .research-note h3 { margin:21px 0 7px; font-size:15px; font-weight:500; line-height:1.4; }
+    .research-note p,.research-note li { font-size:15px; line-height:1.58; }
+    .research-note p { margin:8px 0; }
+    .research-note ul,.research-note ol { margin:9px 0; padding-left:22px; }
+    .research-note li { margin:5px 0; }
+    .research-note .note-section > ul { list-style:none; padding-left:22px; }
+    .research-note .note-section > ul li::marker { content:""; }
+    .research-note a { color:var(--blue); text-decoration-thickness:1px; text-underline-offset:3px; }
+    .research-note strong { font-weight:500; color:#11182a; }
+    .research-note hr { margin:30px 0; border:0; border-top:1px solid var(--line); }
+    .research-note blockquote:not(:first-child) { margin:18px 0; padding:13px 16px; border:0; background:var(--blue-soft); }
+    .research-note blockquote:not(:first-child) p { margin:4px 0; }
+    .research-note table { display:block; width:100%; overflow-x:auto; margin:16px 0 20px; border-collapse:collapse; }
+    .research-note th,.research-note td { min-width:120px; padding:9px 12px 9px 0; border-bottom:1px solid var(--line); text-align:left; vertical-align:top; font-size:13px; line-height:1.45; }
+    .research-note th { color:var(--muted); font-weight:500; }
+    .research-note pre { margin:14px 0; padding:13px 15px; overflow:auto; background:rgba(255,255,255,.42); border-left:1px solid #cfe2da; color:var(--ink); font:12px/1.55 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace; }
+    .research-note code { font:12px/1.45 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace; }
+    .research-note p code,.research-note li code { padding:1px 4px; background:var(--blue-soft); }
+    .research-note .note-section { margin:0; }
+    .research-note .note-fragment { margin:18px 0 24px 7px; padding-left:17px; border-left:2px solid var(--line); }
+    .research-note .note-fragment h2 { margin-top:0; }
+    .research-note .note-callout { margin:20px 0; padding:13px 16px 15px; }
+    .research-note .note-callout h2 { margin:0 0 8px; font-size:14px; letter-spacing:0; }
+    .research-note .note-green { background:#edf8f3; }
+    .research-note .note-green h2 { color:#187b62; }
+    .research-note .note-pink { background:#fff0f3; }
+    .research-note .note-pink h2 { color:#cf315d; }
+    .research-note .note-yellow { background:#fff8dc; }
+    .research-note .note-yellow h2 { color:#aa7600; }
+    .research-note .note-update { margin-top:29px; padding-top:8px; border-top:1px solid var(--line); }
+    .research-note .note-update::before { display:block; margin-bottom:2px; color:var(--faint); content:"added while researching"; font-size:11px; }
+    .research-note .note-source-list ul { list-style:none; padding:0; }
+    .research-note .note-source-list li { padding:9px 0 10px; border-bottom:1px solid var(--line); }
+    .research-note .note-open-loops li { position:relative; padding-left:5px; }
+    .research-note .note-open-loops li::before { position:absolute; left:-18px; color:var(--faint); content:"○"; }
+    .note-outline { margin:0 0 26px; border-bottom:1px solid var(--line); padding-bottom:14px; }
+    .note-outline summary { color:var(--muted); cursor:pointer; font-size:12px; }
+    .note-outline-links { display:flex; flex-wrap:wrap; gap:5px 13px; margin-top:10px; }
+    .note-outline-links a { color:var(--muted); font-size:12px; text-decoration:none; }
+    .note-outline-links a:hover { color:var(--blue); }
+    footer { padding:54px 48px 34px; border-top:1px solid var(--line); color:var(--muted); }
+    .footer-inner { width:min(100%,720px); margin-left:min(25vw,345px); }
+    .footer-grid { display:grid; grid-template-columns:126px 1fr; gap:26px; }
+    .footer-label { font-size:12px; }
+    .footer-links { display:grid; gap:13px; }
+    .footer-links a { display:grid; grid-template-columns:auto 1fr; gap:14px; align-items:center; color:var(--blue); text-decoration:none; }
+    .footer-links a::after { content:""; height:1px; background:var(--line); }
+    .closing { margin:60px 0 0 152px; color:var(--ink); font-size:16px; }
+    .copyright { display:flex; justify-content:space-between; gap:20px; margin:28px 0 0 152px; padding-top:11px; border-top:1px solid var(--line); font-size:12px; }
+    @media (max-width:900px) { .intro-wrap { padding:88px 24px 70px; } .topic-jump { padding:0 24px 34px; } .reading-desk { display:block; min-height:0; } .question-index { padding:52px 24px 90px; } .answer-side { position:fixed; inset:0; z-index:20; height:100dvh; border:0; visibility:hidden; opacity:0; transform:translateX(24px); transition:opacity 180ms ease,transform 180ms ease,visibility 180ms; } .answer-side.is-open { visibility:visible; opacity:1; transform:translateX(0); } .answer-inner { max-width:760px; margin:0 auto; padding:28px 24px 50px; } .answer-top { position:sticky; top:0; z-index:2; margin:-28px -24px 48px; padding:18px 24px; background:rgba(247,248,251,.96); border-bottom:1px solid var(--line); } .close-answer { display:inline-flex; } body.panel-open { overflow:hidden; } .footer-inner { margin-left:0; } }
+    @media (max-width:520px) { .topbar { margin:8px 0 0 8px; } .mark { width:58px; } .index-link { padding-inline:16px; } h1 { font-size:clamp(38px,11vw,52px); } .intro { margin-top:60px; } .topic { grid-template-columns:1fr; gap:8px; padding:30px 0 40px; } .topic-number { padding:0; } .question-button { grid-template-columns:minmax(0,1fr) 18px; } .question-button .tag { display:none; } .research-note h2 { font-size:22px; } .research-note p,.research-note li { font-size:15px; } footer { padding:54px 24px 28px; } .footer-grid { grid-template-columns:1fr; } .closing,.copyright { margin-left:0; } }
   </style>
 </head>
 <body>
-  <header class="vault-bar">
-    <div>
-      <div class="vault-kicker">Anand Grandhi / public research vault</div>
-      <a class="vault-title" href="ai-tutors.html">Notes on building better AI tutors</a>
-      <div class="vault-subtitle">Working fragments, source trails, architecture scribbles and unresolved questions.</div>
-    </div>
-    <nav class="vault-index" aria-label="Research notes">
-      <button class="note-tab" data-note="personality-ai-tutor">Personality of an AI tutor</button>
-      <button class="note-tab active" data-note="diagnostic-engine">Student diagnosis / diagnostic engine</button>
-    </nav>
-  </header>
-
-  <article class="note-sheet">
-    <main class="note-main">
-      <nav class="note-breadcrumbs" id="breadcrumbs">AI tutor / student diagnosis / diagnostic engine</nav>
-      <h1 id="note-title">How should the diagnostic engine work?</h1>
-      <div id="note-content"><div class="loading">Opening working note…</div></div>
-    </main>
-    <aside class="note-side" aria-label="Related note context">
-      <section class="note-side-section">
-        <h2>Notes in this vault</h2>
-        <ul class="note-link-list">
-          <li><button data-note="personality-ai-tutor">Personality of an AI tutor</button></li>
-          <li><button data-note="diagnostic-engine">How should the diagnostic engine work?</button></li>
-        </ul>
-      </section>
-      <section class="note-side-section">
-        <h2>Inside this note</h2>
-        <ul class="note-link-list" id="note-toc"></ul>
-      </section>
-      <section class="note-side-section">
-        <h2>Mentions elsewhere</h2>
-        <p class="note-mention">Learner model<br>The diagnostic engine supplies beliefs, not final truths.</p>
-        <p class="note-mention">Pedagogical policy<br>Diagnosis matters only when it changes what the tutor does next.</p>
-        <p class="note-mention">Evaluation<br>Test whether better diagnosis produces better learning.</p>
-      </section>
-      <p class="note-small" id="note-counts">working note · not settled</p>
-    </aside>
-  </article>
-
+  <nav class="topbar" aria-label="Primary"><a class="mark" href="index.html" aria-label="Back to Anand Grandhi home">A.</a><a class="index-link" href="#topics">Topics</a></nav>
+  <header class="intro-wrap"><p class="eyebrow" id="page-eyebrow"></p><h1 id="page-title"></h1><p class="meta" id="page-meta"></p><p class="intro" id="page-intro"></p></header>
+  <nav class="topic-jump" aria-label="Jump to a topic"><div class="topic-jump-inner"><span class="topic-jump-label">Jump to a topic</span><div class="topic-jump-links" id="top-topics"></div></div></nav>
+  <main class="reading-desk" id="topics"><div class="question-index"><div class="index-heading"><span>Topics and questions</span><span id="topic-count"></span></div><div id="topic-list"></div></div><aside class="answer-side" id="answer-side" aria-label="Selected answer"><div class="answer-panel" id="answer-panel"><article class="answer-inner"><div class="answer-top"><span class="answer-position" id="answer-position"></span><button class="close-answer" id="close-answer" type="button">Close</button></div><span class="tag answer-tag" id="answer-tag"></span><h2 class="answer-title" id="answer-title" tabindex="-1"></h2><div class="answer-copy" id="answer-copy"></div><nav class="answer-nav" aria-label="Answer navigation"><button type="button" id="previous-answer">← Previous</button><button type="button" id="next-answer">Next →</button></nav></article></div></aside></main>
+  <footer><div class="footer-inner"><div class="footer-grid"><span class="footer-label">Explore</span><div class="footer-links" id="footer-topics"></div></div><p class="closing" id="page-footer"></p><div class="copyright"><span>Last revised <span id="page-revised"></span></span><span>© 2026 Anand Grandhi</span></div></div></footer>
   <script>
-    const noteContent = document.getElementById('note-content');
-    const title = document.getElementById('note-title');
-    const breadcrumbs = document.getElementById('breadcrumbs');
-    const toc = document.getElementById('note-toc');
-    const counts = document.getElementById('note-counts');
-
-    function setActive(id) {
-      document.querySelectorAll('[data-note]').forEach(el => el.classList.toggle('active', el.dataset.note === id));
-    }
-    function buildToc() {
-      toc.innerHTML = '';
-      const headings = [...noteContent.querySelectorAll('h2')];
-      headings.slice(0,12).forEach(h => {
-        const li=document.createElement('li'), a=document.createElement('a');
-        a.className='toc-link'; a.href='#'+h.id; a.textContent=h.textContent;
-        li.appendChild(a); toc.appendChild(li);
-      });
-      const sources=noteContent.querySelectorAll('a[href^="http"]').length;
-      counts.textContent=headings.length+' fragments · '+sources+' source links · still open';
-    }
-    function sectionise() {
-      const firstMeta=noteContent.querySelector(':scope > blockquote:first-child');
-      const nodes=[...noteContent.childNodes]; let section=null;
-      nodes.forEach(node => {
-        if (node===firstMeta) return;
-        if (node.nodeType===1 && node.tagName==='H2') {
-          section=document.createElement('section'); section.className='note-section';
-          noteContent.insertBefore(section,node); section.appendChild(node);
-          const text=node.textContent.toLowerCase();
-          if(text.includes('thought i keep')) section.classList.add('fragment');
-          if(text.includes('architecture scratch')||text.includes('diagnostic compiler')) section.classList.add('callout','callout-green');
-          if(text==='moat?') section.classList.add('callout','callout-blue');
-          if(text.includes('uncomfortable question')||text.includes('not notice')) section.classList.add('callout','callout-pink');
-          if(text.includes('open loops')) section.classList.add('callout','callout-yellow','open-loops');
-          if(text.includes('companies')||text.includes('founder-grade experiments')) section.classList.add('update');
-          if(text.includes('source shelf')) section.classList.add('source-section');
-        } else if(section && node.parentNode===noteContent) section.appendChild(node);
-      });
-    }
-    async function showDiagnostic() {
-      title.textContent='How should the diagnostic engine work?';
-      breadcrumbs.textContent='AI tutor / student diagnosis / diagnostic engine';
-      noteContent.innerHTML='<div class="loading">Opening working note…</div>';
-      try {
-        const response=await fetch('notes/diagnostic-engine.html');
-        if(!response.ok) throw new Error('Note not found');
-        noteContent.innerHTML=await response.text();
-        noteContent.querySelectorAll('a[href^="http"]').forEach(a=>{a.target='_blank';a.rel='noreferrer';});
-        sectionise(); buildToc();
-      } catch(error) { noteContent.innerHTML='<p class="loading">The research note could not be opened.</p>'; }
-    }
-    function showPersonality() {
-      title.textContent='Personality of an AI tutor';
-      breadcrumbs.textContent='AI tutor / relationship layer / personality';
-      noteContent.innerHTML='<div class="note-properties"><div class="note-property-key">status</div><div class="note-property-value"><span class="note-tag">placeholder</span><span>research dump coming next</span></div><div class="note-property-key">connects to</div><div class="note-property-value"><span>learner model</span><span>motivation</span><span>memory</span><span>pedagogical policy</span></div></div><div class="placeholder"><p>Most teams write: <em>patient, encouraging, friendly.</em></p><p style="color:var(--muted);font-style:italic">This says almost nothing. What does the tutor do when warmth conflicts with learning?</p></div><div class="note-section callout callout-blue"><h2 id="current-thought">Current thought</h2><p><strong>The student is the hero. The tutor changes roles, but not character.</strong></p><p>This note is deliberately unfinished. Full research dump to be added.</p></div>';
-      buildToc();
-    }
-    function openNote(id,updateHash=true) {
-      setActive(id);
-      if(updateHash) history.replaceState(null,'','#'+id);
-      if(id==='personality-ai-tutor') showPersonality(); else showDiagnostic();
-      window.scrollTo({top:0,behavior:'smooth'});
-    }
-    document.addEventListener('click',event=>{const trigger=event.target.closest('[data-note]');if(trigger)openNote(trigger.dataset.note);});
-    const initial=location.hash==='#personality-ai-tutor'?'personality-ai-tutor':'diagnostic-engine';
-    openNote(initial,false);
+    fetch("content.json?v=" + Date.now(), { cache:"no-store" }).then(response => { if (!response.ok) throw new Error("Could not load the notes."); return response.json(); }).then(content => {
+      const topicList=document.getElementById("topic-list"), footerTopics=document.getElementById("footer-topics"), topTopics=document.getElementById("top-topics"), answerSide=document.getElementById("answer-side"), answerPanel=document.getElementById("answer-panel"), answerTitle=document.getElementById("answer-title"), answerCopy=document.getElementById("answer-copy"), previousButton=document.getElementById("previous-answer"), nextButton=document.getElementById("next-answer");
+      const mobileLayout=()=>window.matchMedia("(max-width:900px)").matches; const questionButtons=[]; let activeIndex=0;
+      document.getElementById("page-eyebrow").textContent=content.eyebrow; document.getElementById("page-title").innerHTML=content.title.replace("better AI tutors","<em>better AI tutors</em>"); document.getElementById("page-meta").innerHTML=content.meta; document.getElementById("page-intro").textContent=content.intro; document.getElementById("page-revised").textContent=content.revised; document.getElementById("page-footer").textContent=content.footer; document.getElementById("topic-count").textContent=content.topics.length+" topics · "+content.questions.length+" notes";
+      content.topics.forEach((topic,index)=>{ const section=document.createElement("section"), number=document.createElement("div"), body=document.createElement("div"), heading=document.createElement("h2"), description=document.createElement("p"), questions=document.createElement("div"); section.className="topic"; section.id=topic.id; number.className="topic-number"; number.textContent=String(index+1).padStart(2,"0"); heading.textContent=topic.title; description.className="topic-description"; description.textContent=topic.description; questions.className="questions"; content.questions.filter(entry=>topic.tags.includes(entry.tag)).forEach(entry=>{ const button=document.createElement("button"); button.type="button"; button.className="question-button"; button.dataset.questionId=entry.id; button.setAttribute("aria-selected","false"); button.innerHTML='<span class="question-text"></span><span class="tag"></span><span class="arrow" aria-hidden="true">→</span>'; button.querySelector(".question-text").textContent=entry.question; button.querySelector(".tag").textContent=entry.tag; button.addEventListener("click",()=>selectQuestion(content.questions.indexOf(entry),true)); questionButtons.push(button); questions.append(button); }); body.append(heading,description,questions); section.append(number,body); topicList.append(section); const topLink=document.createElement("a"); topLink.href="#"+topic.id; topLink.textContent=String(index+1).padStart(2,"0")+" · "+topic.title; topTopics.append(topLink); const footerLink=document.createElement("a"); footerLink.href="#"+topic.id; footerLink.textContent=topic.title; footerTopics.append(footerLink); });
+      function prepareResearchNote(root){
+        const nodes=[...root.childNodes]; let section=null;
+        nodes.forEach(node=>{
+          if(node.nodeType===1&&node.tagName==="H2"){
+            section=document.createElement("section"); section.className="note-section";
+            root.insertBefore(section,node); section.appendChild(node);
+            const text=node.textContent.toLowerCase();
+            if(text.includes("thought i keep")) section.classList.add("note-fragment");
+            if(text.includes("architecture scratch")||text.includes("diagnostic compiler")) section.classList.add("note-callout","note-green");
+            if(text.includes("uncomfortable question")||text.includes("not notice")) section.classList.add("note-callout","note-pink");
+            if(text.includes("open loops")) section.classList.add("note-callout","note-yellow","note-open-loops");
+            if(text.includes("companies / systems")) section.classList.add("note-update");
+            if(text.includes("source shelf")) section.classList.add("note-source-list");
+          } else if(section&&node.parentNode===root){ section.appendChild(node); }
+        });
+        const headings=[...root.querySelectorAll("h2")];
+        if(headings.length){
+          const details=document.createElement("details"),summary=document.createElement("summary"),links=document.createElement("div");
+          details.className="note-outline"; summary.textContent="Outline · "+headings.length+" fragments"; links.className="note-outline-links";
+          headings.slice(0,14).forEach(h=>{const a=document.createElement("a");a.href="#"+h.id;a.textContent=h.textContent;links.append(a);});
+          details.append(summary,links); const meta=root.querySelector(":scope > blockquote:first-child"); meta?meta.after(details):root.prepend(details);
+        }
+      }
+      async function renderAnswer(entry){ answerCopy.replaceChildren(); if (!entry.contentUrl) { (entry.answer||[]).forEach(paragraph=>{ const p=document.createElement("p"); p.textContent=paragraph; answerCopy.append(p); }); return; } answerCopy.innerHTML='<p class="loading">Loading research note…</p>'; try { const response=await fetch(entry.contentUrl+"?v="+Date.now(),{cache:"no-store"}); if(!response.ok) throw new Error(); const note=await response.text(); if(content.questions[activeIndex].id!==entry.id) return; answerCopy.innerHTML='<div class="research-note">'+note+'</div>'; prepareResearchNote(answerCopy.querySelector(".research-note")); answerCopy.querySelectorAll('a[href^="http"]').forEach(link=>{link.target="_blank";link.rel="noreferrer";}); } catch { answerCopy.innerHTML='<p class="note-error">This research note could not be loaded. Please refresh the page.</p>'; } }
+      function selectQuestion(index,userInitiated=false){ activeIndex=Math.max(0,Math.min(index,content.questions.length-1)); const entry=content.questions[activeIndex]; questionButtons.forEach(button=>button.setAttribute("aria-selected",String(button.dataset.questionId===entry.id))); document.getElementById("answer-position").textContent=String(activeIndex+1).padStart(2,"0")+" / "+String(content.questions.length).padStart(2,"0"); document.getElementById("answer-tag").textContent=entry.tag; answerTitle.textContent=entry.question; renderAnswer(entry); previousButton.disabled=activeIndex===0; nextButton.disabled=activeIndex===content.questions.length-1; answerPanel.scrollTop=0; history.replaceState(null,"","#"+entry.id); if(mobileLayout()&&userInitiated){ answerSide.classList.add("is-open"); document.body.classList.add("panel-open"); answerTitle.focus({preventScroll:true}); } }
+      function closeAnswer(){ answerSide.classList.remove("is-open"); document.body.classList.remove("panel-open"); questionButtons.find(button=>button.dataset.questionId===content.questions[activeIndex].id)?.focus(); }
+      previousButton.addEventListener("click",()=>selectQuestion(activeIndex-1)); nextButton.addEventListener("click",()=>selectQuestion(activeIndex+1)); document.getElementById("close-answer").addEventListener("click",closeAnswer); document.addEventListener("keydown",event=>{ if(event.key==="Escape"&&mobileLayout()&&answerSide.classList.contains("is-open")) closeAnswer(); }); const hashIndex=content.questions.findIndex(entry=>entry.id===location.hash.slice(1)); const startIndex=hashIndex>=0?hashIndex:Math.max(0,content.questions.findIndex(entry=>entry.id===content.defaultQuestion)); selectQuestion(startIndex);
+    }).catch(error=>{document.getElementById("topic-list").textContent=error.message;});
   </script>
 </body>
 </html>
