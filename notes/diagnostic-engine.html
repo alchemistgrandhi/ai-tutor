@@ -1,0 +1,1143 @@
+<blockquote>
+<p><strong>Working note</strong> · diagnostic engine · learner model · pedagogy · evaluation<br />
+<strong>Status:</strong> in progress · <strong>Last touched:</strong> 10 Sep 2026<br />
+<strong>Connected notes:</strong> <a href="#">Learner model</a> · <a href="#">What should the tutor teach next?</a> · <a href="#">How should a tutor teach, not just help?</a> · <a href="#">Where should the tutor stop?</a></p>
+</blockquote>
+<h2 id="the-thought-i-keep-coming-back-to">The thought I keep coming back to</h2>
+<p>An AI tutor should not begin with: <em>What answer should I generate?</em></p>
+<p>It should begin with:</p>
+<blockquote>
+<p><strong>What might be happening in this learner’s mind? What evidence supports that belief? What remains uncertain? What is the smallest next action that can both help and clarify?</strong></p>
+</blockquote>
+<p>That is the diagnostic-engine problem.</p>
+<p>A fluent conversation is only one loop of tutoring. A student can give the same wrong answer because they do not understand, guessed, rushed, misread notation, forgot something they once knew, copied a procedure, used a valid method the system did not recognise, or received too much help. Those are different states. They should not all produce the same explanation.</p>
+<p><code>current thesis</code> — The engine should not pretend to read a learner’s mind. It should make better decisions under uncertainty, using evidence that can be inspected and corrected.</p>
+<hr />
+<h2 id="prediction-is-not-diagnosis">Prediction is not diagnosis</h2>
+<p>“This student has a 42% chance of getting the next fractions question right” can be useful. It is still not diagnosis.</p>
+<p>Diagnosis means holding more than one explanation at once.</p>
+<table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>What the system sees</th>
+<th>What may actually be happening</th>
+<th>What the tutor should do differently</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Wrong answer</td>
+<td>Missing concept</td>
+<td>Teach / rebuild representation</td>
+</tr>
+<tr class="even">
+<td>Wrong answer</td>
+<td>Stable misconception</td>
+<td>Use a contrast case or disconfirming probe</td>
+</tr>
+<tr class="odd">
+<td>Wrong answer</td>
+<td>Retrieval failure</td>
+<td>Give a light cue, then remove it</td>
+</tr>
+<tr class="even">
+<td>Wrong answer</td>
+<td>Careless slip</td>
+<td>Ask for a quick self-check; do not remediate a whole skill</td>
+</tr>
+<tr class="odd">
+<td>Wrong answer</td>
+<td>Misread notation</td>
+<td>Ask learner to paraphrase the problem</td>
+</tr>
+<tr class="even">
+<td>Correct answer</td>
+<td>Guess / answer-revealing help</td>
+<td>Do not mark independent mastery</td>
+</tr>
+<tr class="odd">
+<td>Correct answer</td>
+<td>Valid alternate route</td>
+<td>Improve the verifier, not the learner label</td>
+</tr>
+</tbody>
+</table>
+<p>I like the idea of a diagnosis as a <strong>belief state</strong>, not a label.</p>
+<pre class="text"><code>Target: distributive property
+Current belief: probably understood, not established
+Candidate misconception: multiplies only the first term
+Alternatives: transcription slip / attention lapse
+Evidence: same structural error in two unlike problems
+Counterevidence: correct verbal explanation yesterday
+Confidence: medium
+Next action: contrastive symbolic + visual probe</code></pre>
+<p>The phrase “weak at algebra” should probably never exist inside a serious tutor. It is too coarse, too sticky, and too easy for a product to start believing its own dashboard.</p>
+<hr />
+<h2 id="every-tutoring-action-is-also-a-measurement">Every tutoring action is also a measurement</h2>
+<p>A hint teaches something. It also changes the evidence the tutor will see next.</p>
+<ul>
+<li>A revealing hint can turn a real misconception into an apparently correct answer.</li>
+<li>Asking for an explanation can expose reasoning and build metacognition at the same time.</li>
+<li>Switching to a diagram may teach the concept and reveal that the actual problem was symbolic translation.</li>
+<li>A delayed retrieval question refreshes memory and updates the estimate of what still remains.</li>
+</ul>
+<p>So diagnosis and instruction cannot be cleanly separated in a live tutor.</p>
+<blockquote>
+<p><strong>The next action should have two scores:</strong> learning value and information value.</p>
+</blockquote>
+<p>This is a useful product tension. A maximally diagnostic question may feel like an interrogation. A maximally helpful answer may destroy the evidence required to understand the learner. The tutor needs to choose actions that are safe across several plausible learner states.</p>
+<p><code>related:</code> <a href="#">Helpfulness can reduce learning</a></p>
+<hr />
+<h2 id="a-diagnostic-episode-maybe-the-minimum-useful-object">A diagnostic episode — maybe the minimum useful object</h2>
+<p>Instead of storing only a mastery number, I think the system needs to preserve a short, replayable diagnostic episode.</p>
+<pre class="text"><code>objective + relevant prerequisites
+raw student work / speech / drawing / answer
+normalised evidence claims + capture quality
+assistance already used
+leading hypotheses + alternatives
+models consulted + disagreement
+chosen probe / intervention + reason
+student response
+verification after help
+student or teacher dispute, if any</code></pre>
+<p>Why this matters:</p>
+<ul>
+<li>A teacher can see why the system acted.</li>
+<li>A product team can debug a bad diagnosis.</li>
+<li>Content teams can discover a broken question, misleading explanation or bad skill tag.</li>
+<li>The organisation eventually gets a dataset connecting <strong>evidence → hypothesis → action → outcome</strong>.</li>
+</ul>
+<p>This is potentially more valuable than a chat transcript. It is closer to a clinical case record or an engineering incident log.</p>
+<hr />
+<h2 id="what-the-diagnostic-engine-has-to-hold-at-once">What the diagnostic engine has to hold at once</h2>
+<h3 id="domain-model">1. Domain model</h3>
+<p>Not just a syllabus list.</p>
+<ul>
+<li>concepts, procedures and representations</li>
+<li>prerequisite relations — but marked as expert-authored, empirically inferred, curriculum-mandated or uncertain</li>
+<li>valid solution paths, not one canonical answer path</li>
+<li>common misconceptions and bug patterns</li>
+<li>question / item metadata</li>
+<li>hints, explanations and interventions</li>
+<li>curriculum, standard and assessment mappings</li>
+</ul>
+<p>The key question is not only, <em>what comes before this concept?</em></p>
+<p>It is:</p>
+<blockquote>
+<p><strong>Which prerequisite, if repaired, is most likely to unlock the greatest downstream learning?</strong></p>
+</blockquote>
+<h3 id="learner-model">2. Learner model</h3>
+<p>What the tutor currently believes about this particular learner.</p>
+<ul>
+<li>mastery by concept and procedure</li>
+<li>misconception hypotheses, not just errors</li>
+<li>fluency / retrieval strength</li>
+<li>confidence and freshness of evidence</li>
+<li>response to prior interventions</li>
+<li>access, language and device context when it materially changes interpretation</li>
+<li>preferences only when they demonstrate value — no permanent “learning style” labels</li>
+</ul>
+<h3 id="evidence-model">3. Evidence model</h3>
+<p>An observation is not self-explanatory.</p>
+<ul>
+<li>Does this question really test the skill it claims to test?</li>
+<li>Was the student helped before responding?</li>
+<li>Is handwriting / speech / OCR reliable enough?</li>
+<li>Is an explanation independent reasoning, or tutor language repeated back?</li>
+<li>Are four signals genuinely independent, or four views of the same wrong answer?</li>
+</ul>
+<h3 id="decision-model">4. Decision model</h3>
+<p>The tutor needs explicit choices:</p>
+<p><code>ask a probe</code> · <code>request explanation</code> · <code>switch representation</code> · <code>hint</code> · <code>teach</code> · <code>repair prerequisite</code> · <code>verify transfer</code> · <code>wait</code> · <code>stop diagnosing</code> · <code>show uncertainty</code> · <code>ask learner/teacher to correct the model</code> · <code>escalate</code></p>
+<p>The four models should be separate. A new handwriting recogniser should not quietly change the meaning of “mastery.” A curriculum editor correcting a prerequisite edge should not require retraining the whole tutor.</p>
+<hr />
+<h2 id="architecture-scratch">Architecture scratch</h2>
+<pre class="mermaid"><code>flowchart TD
+  A[Student work, answers, speech, behaviour] --&gt; B[Typed evidence claims]
+  B --&gt; C[Diagnostic compiler]
+  D[Domain + misconception graphs] --&gt; C
+  E[Learner-state estimators] --&gt; C
+  C --&gt; F[Probe / teaching / stop / escalation policy]
+  F --&gt; G[Tutor interaction]
+  G --&gt; A
+  C --&gt; H[Student + teacher model view]</code></pre>
+<p>The important thing here is that it is a loop, not a pipeline.</p>
+<p><code>observe → normalise → verify → hypothesise → update → choose → intervene → recheck</code></p>
+<p>The LLM belongs inside this loop. It is not the loop.</p>
+<hr />
+<h2 id="knowledge-graphs-are-not-enough.-we-need-misconception-graphs.">Knowledge graphs are not enough. We need misconception graphs.</h2>
+<p>A knowledge graph says what a student may not know.</p>
+<p>A misconception graph says what they may believe instead.</p>
+<p>Useful misconception-graph edges:</p>
+<ul>
+<li>produces this wrong-step signature</li>
+<li>often confused with</li>
+<li>distinguished by this probe</li>
+<li>appears in this representation but not another</li>
+<li>responds to this intervention</li>
+<li>may be induced by this explanation</li>
+<li>co-occurs with this other misconception</li>
+</ul>
+<p>Example:</p>
+<pre class="text"><code>“multiplies only first term”
+  → error signature: a(b + c) = ab + c
+  → contrast probe: 3(x + 4), then explain why 4 is still inside bracket
+  → visual: three groups of x + 4 objects
+  → near neighbour: adds instead of multiplies
+  → verify: new symbolic task + visual transfer</code></pre>
+<p><code>possible moat:</code> The organisation’s map of <strong>misconception → evidence → intervention → verified change</strong> may eventually matter more than the chat interface.</p>
+<p>Research to return to: <a href="https://doi.org/10.1177/0146621617722791">Kuo, Chen &amp; de la Torre on coexisting skills and misconceptions</a>.</p>
+<hr />
+<h2 id="q-matrix-note-boring-infrastructure-high-leverage-failure-point">Q-matrix note — boring infrastructure, high-leverage failure point</h2>
+<p>A Q-matrix maps questions to the skills they require. This is how an answer becomes evidence about concepts rather than just a score.</p>
+<p>The risk is obvious once you see it: if a question is tagged to the wrong skills, the tutor can become confidently wrong at scale.</p>
+<p>Things I would want in a real product:</p>
+<ul>
+<li>version every item–skill mapping</li>
+<li>show whether an expert, data or AI proposed it</li>
+<li>track what learner data supports or contradicts it</li>
+<li>make it easy for teachers to dispute it</li>
+<li>distinguish “tests this skill” from “uses this skill somewhere in the solution”</li>
+<li>allow multiple valid solution paths</li>
+</ul>
+<p><code>watch:</code> AI can help propose Q-matrices. It should not be allowed to make them invisible or unquestionable. <a href="https://doi.org/10.1007/s11336-008-9055-4">Q-matrix validation work</a> is a reminder that the mapping itself is a model.</p>
+<hr />
+<h2 id="learner-state-models-use-a-portfolio-not-a-religion">Learner-state models — use a portfolio, not a religion</h2>
+<table>
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Model / family</th>
+<th>What it is useful for</th>
+<th>Why I would keep it</th>
+<th>What can go wrong</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>BKT</strong></td>
+<td>Interpretable online updates</td>
+<td>Modest data, clear assumptions, works as a baseline</td>
+<td>Simplifies partial knowledge; often turns work into correct/incorrect</td>
+</tr>
+<tr class="even">
+<td><strong>DINA / G-DINA</strong></td>
+<td>Skill-attribute profiles</td>
+<td>Explicitly represents combinations of needed skills</td>
+<td>Depends completely on meaningful attributes and Q-matrix</td>
+</tr>
+<tr class="odd">
+<td><strong>DKT / AKT / DKVMN</strong></td>
+<td>Long interaction histories and next-response prediction</td>
+<td>Can learn temporal patterns and contextual relevance</td>
+<td>Data hungry; harder to explain; better AUC may not mean better teaching</td>
+</tr>
+<tr class="even">
+<td><strong>Graph models</strong></td>
+<td>Propagation through concepts/items</td>
+<td>Useful when domain graph is genuinely strong</td>
+<td>One bad edge can spread a bad inference</td>
+</tr>
+<tr class="odd">
+<td><strong>LLM + verifier</strong></td>
+<td>Open-ended reasoning / language / multimodal work</td>
+<td>Can propose hypotheses and converse</td>
+<td>Fluent overconfidence; must not silently write the learner model</td>
+</tr>
+</tbody>
+</table>
+<p>The near-term answer probably looks like:</p>
+<blockquote>
+<p><strong>Interpretable probabilistic spine + specialised models where they earn their place + LLMs constrained to hypothesis, retrieval and explanation work.</strong></p>
+</blockquote>
+<p>Do not replace BKT merely because something sounds more modern. A simple state model that teachers can inspect may beat an opaque model if the product decision is consequential.</p>
+<p>Sources: <a href="https://doi.org/10.1007/BF01099821">BKT</a> · <a href="https://arxiv.org/abs/1506.05908">Deep Knowledge Tracing</a> · <a href="https://doi.org/10.1145/3394486.3403282">AKT</a> · <a href="https://doi.org/10.1007/s11336-011-9207-7">G-DINA</a> · <a href="https://ojs.aaai.org/index.php/AAAI/article/view/6080">Neural Cognitive Diagnosis</a></p>
+<hr />
+<h2 id="warm-belief-updating">Warm belief updating</h2>
+<p>The model should not rediagnose from zero after every answer.</p>
+<p>But it should not overreact either.</p>
+<p>A single careless error should make a small dent. A structural error repeated across unlike problems should make a bigger one. A correct answer after an answer-revealing hint should barely count as independent evidence.</p>
+<p>What should change the update size?</p>
+<ul>
+<li>diagnosticity of the task</li>
+<li>help already used</li>
+<li>answer <em>and</em> reasoning agreement</li>
+<li>recency of prior evidence</li>
+<li>repeated pattern vs one anomaly</li>
+<li>same representation vs transfer across representations</li>
+<li>parser / verifier reliability</li>
+<li>plausible context: unfamiliar notation, long gap, bad scan, device issue</li>
+</ul>
+<p><code>important:</code> mastery has a shelf life. “Solved independently yesterday” and “solved once six months ago” cannot have the same operational meaning.</p>
+<p>The tutor should not erase old learning. It should schedule cheap revalidation as evidence goes stale. Retrieval practice is nice here because it can refresh learning and refresh diagnosis at the same time.</p>
+<hr />
+<h2 id="drift-when-the-same-score-stops-meaning-the-same-thing">Drift — when the same score stops meaning the same thing</h2>
+<p>Three kinds:</p>
+<ol type="1">
+<li><strong>Individual drift</strong> — learner forgets, learns elsewhere, changes effort or context.</li>
+<li><strong>Population drift</strong> — a new cohort, curriculum, language group or age band arrives.</li>
+<li><strong>System drift</strong> — question wording, hint policy, content, interface or data capture changes what an observation means.</li>
+</ol>
+<p>Useful checks:</p>
+<ul>
+<li>calibration by cohort, concept, curriculum version, language, device and modality</li>
+<li>rolling review of high-confidence mistakes</li>
+<li>shadow evaluation on newly labelled work</li>
+<li>change detection on input patterns and residual errors</li>
+<li>conservative fallback to simpler models when new behaviour becomes hard to interpret</li>
+</ul>
+<p>The question is not just, <em>when should we retrain?</em></p>
+<blockquote>
+<p><strong>How will we notice that a 70% mastery score has stopped meaning what it used to mean?</strong></p>
+</blockquote>
+<hr />
+<h2 id="evidence-fuse-claims-not-raw-signals">Evidence: fuse claims, not raw signals</h2>
+<p>An AI tutor can observe answers, steps, handwriting, drawings, speech, code, hint use, edits, time, confidence reports, navigation and teacher comments.</p>
+<p>More signals can create more correlated noise.</p>
+<p>Every observation should become something like:</p>
+<table>
+<thead>
+<tr class="header">
+<th>Field</th>
+<th>Example</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Claim</td>
+<td>“Student distributed multiplication over only first term”</td>
+</tr>
+<tr class="even">
+<td>Target</td>
+<td>Distributive property</td>
+</tr>
+<tr class="odd">
+<td>Direction</td>
+<td>Supports / contradicts / neutral</td>
+</tr>
+<tr class="even">
+<td>Strength</td>
+<td>High / medium / low diagnosticity</td>
+</tr>
+<tr class="odd">
+<td>Reliability</td>
+<td>OCR 0.83; symbolic verifier high</td>
+</tr>
+<tr class="even">
+<td>Assistance</td>
+<td>None / hint / worked example / reveal</td>
+</tr>
+<tr class="odd">
+<td>Provenance</td>
+<td>Student writing, verifier, teacher, LLM, timestamp</td>
+</tr>
+<tr class="even">
+<td>Dependence</td>
+<td>New evidence or another view of same response?</td>
+</tr>
+<tr class="odd">
+<td>Freshness</td>
+<td>How quickly this should decay</td>
+</tr>
+</tbody>
+</table>
+<p>Triangulation is stronger than volume.</p>
+<pre class="text"><code>wrong final answer
++ same invalid step in working
++ explanation states the invalid rule
++ failure on a contrast probe
+= strong misconception evidence</code></pre>
+<p>Four UI events from one quiz attempt are not four independent pieces of evidence.</p>
+<p><code>warning:</code> response time is not a motivation detector. Speech hesitation is not an emotion detector. Behavioural traces are interaction evidence, not psychological truth.</p>
+<hr />
+<h2 id="step-verification-first">Step verification first</h2>
+<p>For maths, logic, derivations, code and structured writing, the valuable unit is often the <strong>first causal error</strong>, not the final wrong answer.</p>
+<p>The verifier should ask:</p>
+<ul>
+<li>Does this step follow from the previous state?</li>
+<li>Is it valid but non-canonical?</li>
+<li>Where is the first error?</li>
+<li>Does later work only propagate that earlier error?</li>
+<li>Is the step incomplete instead of wrong?</li>
+<li>Did the system fail to recognise a valid method?</li>
+</ul>
+<p>Verifier hierarchy:</p>
+<ol type="1">
+<li>execution / tests for code</li>
+<li>symbolic equivalence and constraint checking for maths</li>
+<li>proof-state / logic checking</li>
+<li>simulation, units and dimensional checks for quantitative science</li>
+<li>rubrics and evidence checks for open-ended work</li>
+<li>LLM judgement only when stronger checking is unavailable</li>
+</ol>
+<blockquote>
+<p>The LLM can translate verifier output into a good explanation. It should not overrule a reliable verifier because it speaks more smoothly.</p>
+</blockquote>
+<p>Research note: <a href="https://arxiv.org/abs/2407.09136">Daheim et al. on stepwise verification and remediation</a>.</p>
+<hr />
+<h2 id="what-llms-should-do-here-and-what-they-should-not">What LLMs should do here — and what they should not</h2>
+<p>Useful jobs:</p>
+<ul>
+<li>interpret a student’s natural-language explanation</li>
+<li>propose multiple misconception hypotheses</li>
+<li>connect a method to several valid strategies</li>
+<li>ask small follow-up questions</li>
+<li>retrieve relevant history and misconception notes</li>
+<li>make a teacher-readable account of evidence</li>
+<li>turn structured policy decisions into natural tutoring dialogue</li>
+</ul>
+<p>Not useful as an unconstrained role:</p>
+<blockquote>
+<p>“Read this response and tell me what is wrong with the child.”</p>
+</blockquote>
+<p>The stronger pattern:</p>
+<ol type="1">
+<li>point to exact evidence</li>
+<li>verify correctness with domain tools</li>
+<li>generate multiple explanations, including slips and input failures</li>
+<li>retrieve from a curated misconception / intervention library</li>
+<li>rerank using supporting and contradictory evidence</li>
+<li>state what would disconfirm each hypothesis</li>
+<li>choose the smallest useful probe</li>
+<li>write structured output back into the diagnostic episode</li>
+</ol>
+<p><code>short version:</code> <strong>generate → retrieve → rerank → challenge → probe</strong></p>
+<p>Research to inspect: <a href="https://arxiv.org/abs/2504.00843">MathCog</a> · <a href="https://aclanthology.org/2026.bea-1.56/">LLMs still struggle where feedback matters most</a> · <a href="https://arxiv.org/abs/2602.02414">Misconception diagnosis from dialogue: generate, retrieve, rerank</a></p>
+<h3 id="llm-memory-is-not-a-learner-model">LLM memory is not a learner model</h3>
+<p>Conversation history is long, inconsistent and hard to audit. It should not become the canonical record of a student.</p>
+<p>The learner model should live in structured state. The LLM sees a small, task-specific projection of relevant evidence.</p>
+<p>Otherwise a casual line like “I’m terrible at geometry” becomes a persistent diagnosis simply because it was memorable language.</p>
+<hr />
+<h2 id="multi-agent-diagnosis-useful-only-if-the-agents-actually-disagree-for-good-reasons">Multi-agent diagnosis — useful only if the agents actually disagree for good reasons</h2>
+<p>Possible roles:</p>
+<ul>
+<li>evidence agent</li>
+<li>verifier / first-error agent</li>
+<li>history agent</li>
+<li>misconception agent</li>
+<li>skeptic agent looking for alternatives</li>
+<li>policy agent choosing action</li>
+<li>safety / escalation agent</li>
+<li>narrator for student or teacher</li>
+</ul>
+<p>But a committee of differently worded prompts to the same model is not automatically safer. It can be an expensive way of getting the same mistake repeated five times.</p>
+<p>Use multiple agents only when they bring genuinely different:</p>
+<ul>
+<li>tools or verifiers</li>
+<li>retrieval corpora</li>
+<li>evidence sources</li>
+<li>trained models</li>
+<li>objectives (for example, one agent is rewarded for finding counterevidence)</li>
+<li>abstention rules</li>
+</ul>
+<p><code>measure:</code> disagreement rate, correlation of errors, and which disagreements lead to teacher correction. Not just final majority vote.</p>
+<hr />
+<h2 id="differential-diagnosis-keep-alternatives-alive">Differential diagnosis: keep alternatives alive</h2>
+<p>This may be the most important transplant from medicine: not medical content, but the discipline of maintaining a differential diagnosis.</p>
+<table>
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Leading explanation</th>
+<th>Evidence for</th>
+<th>What could contradict it</th>
+<th>Small differentiating probe</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Missing prerequisite</td>
+<td>Fails decomposed substep</td>
+<td>Solved similar task independently</td>
+<td>Isolate prerequisite without target procedure</td>
+</tr>
+<tr class="even">
+<td>Stable misconception</td>
+<td>Same structural error repeats</td>
+<td>None yet</td>
+<td>Contrast case where false rule predicts a different answer</td>
+</tr>
+<tr class="odd">
+<td>Retrieval failure</td>
+<td>Moves after light cue</td>
+<td>Repeated no-hint failure</td>
+<td>Delayed no-hint recall</td>
+</tr>
+<tr class="even">
+<td>Careless slip</td>
+<td>Correct explanation + later work</td>
+<td>Same error recurs</td>
+<td>Near-transfer task with self-check prompt</td>
+</tr>
+<tr class="odd">
+<td>Misread notation</td>
+<td>Verbal interpretation differs</td>
+<td>Correct notation elsewhere</td>
+<td>Ask student to paraphrase prompt</td>
+</tr>
+<tr class="even">
+<td>Capture error</td>
+<td>OCR uncertain</td>
+<td>Same issue in typed work</td>
+<td>Ask for confirmation of symbol / image</td>
+</tr>
+</tbody>
+</table>
+<p>Before acting:</p>
+<ol type="1">
+<li>What are the leading explanations?</li>
+<li>What evidence would separate them?</li>
+<li>What is the cost of acting on the wrong one?</li>
+</ol>
+<p>Model disagreement should be classified, not averaged into a fake “63% mastery” number.</p>
+<p>Maybe BKT sees high mastery, cognitive diagnosis sees a missing attribute, the verifier sees a valid alternate method, the LLM sees a misconception, and handwriting recognition is uncertain about a minus sign. Those are not five votes on the same question.</p>
+<hr />
+<h2 id="cold-start-act-while-uncertain">Cold start — act while uncertain</h2>
+<p>The tutor needs a diagnosis to choose a good probe. It needs a good probe to get a diagnosis. That circularity is not an edge case; it is the normal condition.</p>
+<p>Early sources of evidence:</p>
+<ul>
+<li>course and population priors, with provenance</li>
+<li>prerequisite structure</li>
+<li>prior assessment data, with consent</li>
+<li>short adaptive entry task</li>
+<li>teacher input</li>
+<li>student self-report treated as weak evidence</li>
+<li>high-information anchor tasks</li>
+<li>early prompts chosen to be both useful and diagnostic</li>
+</ul>
+<p>The goal is not to finish a perfect placement test before helping. The goal is to choose an early action that is robust across several plausible states.</p>
+<p>Example: when the tutor cannot tell a misconception from a slip, ask the learner to compare two worked examples. The activity can help either learner and reveals different things depending on their explanation.</p>
+<p><code>name for this:</code> <strong>dual-purpose action</strong> — safe instruction + diagnosis.</p>
+<hr />
+<h2 id="from-cat-to-live-tutoring">From CAT to live tutoring</h2>
+<p>Computerised adaptive testing has an important idea: avoid questions that are too easy or too hard to tell you anything useful.</p>
+<p>Useful things to borrow from CAT:</p>
+<ul>
+<li>calibrated item banks</li>
+<li>content balancing</li>
+<li>item exposure controls</li>
+<li>standard-error-aware stopping</li>
+<li>clear distinction between assessment and teaching claims</li>
+</ul>
+<p>But a tutor has a larger action space.</p>
+<table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th></th>
+<th>CAT</th>
+<th>Ongoing tutor</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Hidden state</td>
+<td>Ability / attributes</td>
+<td>Rich learner state that changes</td>
+</tr>
+<tr class="even">
+<td>Action</td>
+<td>Ask item</td>
+<td>Ask, hint, explain, represent differently, wait, escalate</td>
+</tr>
+<tr class="odd">
+<td>Goal</td>
+<td>Estimate efficiently</td>
+<td>Improve future learning while reducing uncertainty</td>
+</tr>
+<tr class="even">
+<td>Cost</td>
+<td>Test length / exposure</td>
+<td>Effort, trust, time, learning, money, risk</td>
+</tr>
+</tbody>
+</table>
+<p>The bridge is expected reduction in uncertainty. CAT asks: <em>which item best localises ability?</em> A tutoring policy asks: <em>which next move helps the learner and tells us what to do after that?</em></p>
+<p><code>company to inspect:</code> <a href="https://www.aleks.com/about_aleks/knowledge_space_theory">ALEKS and Knowledge Space Theory</a>. Structured assessment can locate learners surprisingly efficiently without a chat interface.</p>
+<hr />
+<h2 id="probe-selection">Probe selection</h2>
+<p>The most valuable generated question may not be a practice question. It may be a question designed to separate two hypotheses.</p>
+<p>For example:</p>
+<pre class="text"><code>Hypothesis A: student does not understand fraction equivalence
+Hypothesis B: student understands equivalence but mishandles multiplication
+
+Bad next move: another random fractions question
+Better next move: a deliberately designed probe where A and B predict different responses</code></pre>
+<p>Generated probes need more checking than generic practice questions:</p>
+<ul>
+<li>correct</li>
+<li>aligned to the actual target construct</li>
+<li>minimally confounded</li>
+<li>appropriate difficulty and language</li>
+<li>non-leading</li>
+<li>not a duplicate of prior evidence</li>
+<li>safe as both measurement and instruction</li>
+</ul>
+<p><code>open question:</code> Can diagnostic-probe generation become a more valuable content capability than generic question generation?</p>
+<hr />
+<h2 id="stopping-is-a-product-decision">Stopping is a product decision</h2>
+<p>How many questions are enough?</p>
+<p>Not just a statistical setting. Every additional probe spends time, patience and trust. Every early stop accepts uncertainty.</p>
+<p>Possible reasons to stop:</p>
+<ul>
+<li>leading explanation is clearly separated from alternatives</li>
+<li>expected information gain is now small</li>
+<li>next action would be the same across plausible hypotheses</li>
+<li>cost in effort or frustration is too high</li>
+<li>a safe teaching action can proceed without more diagnosis</li>
+<li>uncertainty remains high and the case should escalate</li>
+</ul>
+<p>Different decisions need different confidence.</p>
+<table>
+<thead>
+<tr class="header">
+<th>Decision</th>
+<th>Default evidence bar</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Choose between two harmless examples</td>
+<td>Low</td>
+</tr>
+<tr class="even">
+<td>Ask a reversible probe</td>
+<td>Low</td>
+</tr>
+<tr class="odd">
+<td>Offer a tentative hint</td>
+<td>Low–medium</td>
+</tr>
+<tr class="even">
+<td>Change next lesson</td>
+<td>Medium</td>
+</tr>
+<tr class="odd">
+<td>Mark skill mastered</td>
+<td>Medium–high + independent evidence</td>
+</tr>
+<tr class="even">
+<td>Place in remediation / alert parent</td>
+<td>High, recent, explainable</td>
+</tr>
+<tr class="odd">
+<td>High-stakes placement</td>
+<td>External validation + human governance</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>Uncertainty is only useful when it changes product behaviour.</p>
+</blockquote>
+<hr />
+<h2 id="intervention-as-diagnosis">Intervention-as-diagnosis</h2>
+<p>Sometimes the best way to understand a learner is to teach, then observe what changes.</p>
+<ul>
+<li>Minimal cue works → retrieval failure becomes more plausible.</li>
+<li>Contrast cases work → overgeneralised rule may have been the issue.</li>
+<li>Diagram works but symbols do not → representation translation may be the issue.</li>
+<li>Prerequisite repair unlocks target task → dependency gains support.</li>
+<li>“Teach it back” exposes whether the repair is generative or merely imitative.</li>
+</ul>
+<p>This resembles dynamic assessment: not only what a student can do alone, but what becomes possible with graduated support.</p>
+<p>But treatment response is evidence, not proof. One intervention can work for several reasons.</p>
+<p>Record:</p>
+<ul>
+<li>hypothesis before intervention</li>
+<li>exact intervention components</li>
+<li>immediate response</li>
+<li>independent near transfer</li>
+<li>representation transfer</li>
+<li>delayed retrieval</li>
+<li>downstream use</li>
+<li>whether support was removed</li>
+</ul>
+<hr />
+<h2 id="verification-after-remediation">Verification after remediation</h2>
+<p>A correct answer after help verifies completion, not learning.</p>
+<p>Useful verification ladder:</p>
+<ol type="1">
+<li>Can the learner immediately reconstruct or explain the corrected idea?</li>
+<li>Can they solve a structurally similar problem independently?</li>
+<li>Can they recognise it in a different representation?</li>
+<li>Can they retrieve it later?</li>
+<li>Can they use it inside a more complex task?</li>
+</ol>
+<p>I would want the system to use language like:</p>
+<ul>
+<li><code>resolved now</code></li>
+<li><code>supported but not independent</code></li>
+<li><code>near transfer shown</code></li>
+<li><code>retained</code></li>
+<li><code>generalised</code></li>
+</ul>
+<p>This is an antidote to one of edtech’s easiest mistakes: optimise immediate post-hint correctness and call it learning.</p>
+<h3 id="diagnose-the-intervention-too">Diagnose the intervention too</h3>
+<p>If remediation fails, the student is not automatically the cause.</p>
+<p>Maybe:</p>
+<ul>
+<li>the explanation was poor</li>
+<li>the representation was mismatched</li>
+<li>language was inaccessible</li>
+<li>prerequisite graph was wrong</li>
+<li>task did not measure what it claimed</li>
+<li>the verifier misunderstood valid reasoning</li>
+</ul>
+<p>Every failed intervention should update beliefs about the learner <strong>and</strong> the instructional asset.</p>
+<hr />
+<h2 id="confidence-uncertainty-and-calibrated-abstention">Confidence, uncertainty and calibrated abstention</h2>
+<p>Two learners can both be estimated at 60% mastery, but one may have a long history of contradictory evidence and the other may have only one observation. The estimate is the same; the uncertainty is not.</p>
+<p>Useful behaviour:</p>
+<ul>
+<li>broad uncertainty → gather more evidence or choose a robust action</li>
+<li>narrow uncertainty → personalise more confidently</li>
+<li>several competing modes → preserve alternatives</li>
+<li>stale evidence → revalidate before consequential action</li>
+<li>no reliable small set of explanations → abstain / ask for help</li>
+</ul>
+<p><code>important:</code> an LLM writing “confidence: 0.92” is not calibration. Confidence needs to be checked against labelled outcomes, by task, cohort, modality and consequence.</p>
+<p>Things to measure:</p>
+<ul>
+<li>reliability curves</li>
+<li>high-confidence error rate</li>
+<li>calibration by subgroup / content area / modality</li>
+<li>selective accuracy when the system abstains</li>
+<li>error at real decision thresholds</li>
+</ul>
+<p>Research leads: <a href="https://papers.nips.cc/paper/8613-conformalized-quantile-regression">Conformalized Quantile Regression</a> · <a href="https://arxiv.org/abs/2501.05415">uncertainty-aware knowledge tracing</a></p>
+<hr />
+<h2 id="when-should-a-human-enter">When should a human enter?</h2>
+<p>Human escalation should be a designed part of the system, not a help button after confidence has already failed.</p>
+<p>Escalate when:</p>
+<ul>
+<li>consequential decision + insufficient confidence</li>
+<li>models strongly disagree</li>
+<li>repeated interventions fail</li>
+<li>student disputes the model and evidence is ambiguous</li>
+<li>input quality is too poor</li>
+<li>new misconception has no validated pathway</li>
+<li>accessibility, wellbeing, safeguarding or integrity issues appear</li>
+<li>multiple learners show the same issue — maybe the product is wrong</li>
+</ul>
+<p>The escalation packet should be short and useful:</p>
+<pre class="text"><code>what decision is needed
+relevant student evidence
+leading + alternative explanations
+what was already tried
+why confidence is low
+smallest possible human judgement
+way to correct learner model AND domain model</code></pre>
+<p><code>product principle:</code> Teachers are not merely escalation endpoints. They are an input system for improving the diagnostic engine.</p>
+<hr />
+<h2 id="an-open-learner-model">An open learner model</h2>
+<p>The learner model should not become a hidden dossier.</p>
+<p>What a student should be able to see:</p>
+<ul>
+<li>what the system currently believes</li>
+<li>evidence behind the belief</li>
+<li>confidence and freshness</li>
+<li>what will happen because of it</li>
+<li>ways to say: “I guessed,” “I used help,” “this was a typo,” “I know this another way”</li>
+</ul>
+<p>What a teacher should be able to do:</p>
+<ul>
+<li>inspect evidence trail</li>
+<li>correct question–skill mappings</li>
+<li>confirm / reject / defer a misconception hypothesis</li>
+<li>add relevant context</li>
+<li>override a path without erasing evidence</li>
+<li>separate one-student correction from curriculum-wide correction</li>
+</ul>
+<p>Corrections should become new evidence, not absolute overwrite.</p>
+<p>If a student says, “I knew it; I just made a typo,” the system can believe that a little—but should validate it with a cheap follow-up.</p>
+<p>Sources: <a href="https://eric.ed.gov/?id=EJ1091260">SMILI: Student Models that Invite the Learner In</a> · <a href="https://doi.org/10.1016/j.compedu.2020.103878">Open learner models review</a></p>
+<hr />
+<h2 id="synthetic-students-wind-tunnels-not-proof">Synthetic students — wind tunnels, not proof</h2>
+<p>Student simulators can help test policies before testing them on real learners.</p>
+<p>Good uses:</p>
+<ul>
+<li>stress-test probing and stopping rules</li>
+<li>simulate misconceptions, guessing, forgetting, help-seeking and gaming</li>
+<li>create regression cases</li>
+<li>compare policies offline</li>
+<li>test escalation thresholds</li>
+<li>estimate latency and infrastructure load</li>
+</ul>
+<p>What they cannot do: prove the policy will help real students.</p>
+<p>The simulator can become the target. A policy can become excellent at its quirks while failing with real learners.</p>
+<p>Validation ladder:</p>
+<ol type="1">
+<li>Does the simulator reproduce broad error / transition patterns?</li>
+<li>Does it behave plausibly given a specified misconception and history?</li>
+<li>Do policies rank similarly in simulation, shadow mode and real data?</li>
+<li>Small supervised pilot.</li>
+<li>Randomised learning evaluation.</li>
+<li>Ongoing mismatch monitoring.</li>
+</ol>
+<p>Good line to remember: <strong>synthetic students are wind tunnels, not proof that the aircraft is safe to fly.</strong></p>
+<hr />
+<h2 id="the-ai-diagnostic-compiler">The AI diagnostic compiler</h2>
+<p>I like this phrase because it moves the focus away from “one very smart agent.”</p>
+<p>The compiler converts one representation into another through explicit, inspectable stages:</p>
+<pre class="text"><code>raw learner event
+→ typed evidence claims
+→ candidate hypotheses
+→ belief-state update
+→ action candidates
+→ policy + safety checks
+→ tutor action
+→ verification evidence
+→ revised state</code></pre>
+<h3 id="inputs">Inputs</h3>
+<ul>
+<li>curriculum / standards</li>
+<li>concept, prerequisite, Q-matrix and misconception graphs</li>
+<li>item metadata and difficulty</li>
+<li>student event history</li>
+<li>multimodal work</li>
+<li>teacher and student corrections</li>
+<li>calibration data and model versions</li>
+<li>product constraints: time, device, cost, policy, consent</li>
+</ul>
+<h3 id="what-the-internal-representation-needs-to-keep">What the internal representation needs to keep</h3>
+<ul>
+<li>provenance</li>
+<li>assistance / independence level</li>
+<li>uncertainty and disagreement</li>
+<li>evidence freshness and dependence</li>
+<li>candidate actions</li>
+<li>predicted learning and information effect</li>
+<li>safety constraints</li>
+<li>verification requirement</li>
+</ul>
+<p><code>why this might matter:</code> A stable intermediate representation lets the company swap in a better vision model, LLM, bandit policy or knowledge-tracing model without rewriting the tutor from scratch.</p>
+<p>The chat model will commoditise faster than this diagnostic infrastructure.</p>
+<hr />
+<h2 id="production-boundaries-rough-first-pass">Production boundaries — rough first pass</h2>
+<table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Component</th>
+<th>Owns</th>
+<th>Must not do</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Event gateway</td>
+<td>Capture typed events</td>
+<td>Infer psychological state</td>
+</tr>
+<tr class="even">
+<td>Modality parsers</td>
+<td>OCR, speech, handwriting, diagrams, code</td>
+<td>Make final diagnosis</td>
+</tr>
+<tr class="odd">
+<td>Domain service</td>
+<td>Concepts, prerequisites, Q-matrix, misconceptions</td>
+<td>Store transient chat state</td>
+</tr>
+<tr class="even">
+<td>Verifier</td>
+<td>Correctness, constraints, equivalence</td>
+<td>Invent causes</td>
+</tr>
+<tr class="odd">
+<td>Learner-state service</td>
+<td>Beliefs, uncertainty, freshness</td>
+<td>Generate student-facing prose</td>
+</tr>
+<tr class="even">
+<td>Hypothesis service</td>
+<td>Alternative explanations</td>
+<td>Commit permanent labels invisibly</td>
+</tr>
+<tr class="odd">
+<td>Policy service</td>
+<td>Probe / teach / stop / escalate</td>
+<td>Bypass safety threshold</td>
+</tr>
+<tr class="even">
+<td>Tutor renderer</td>
+<td>Dialogue, visuals, explanation</td>
+<td>Change diagnosis without logging</td>
+</tr>
+<tr class="odd">
+<td>Evaluation service</td>
+<td>Calibration, drift, outcomes</td>
+<td>Optimise engagement alone</td>
+</tr>
+<tr class="even">
+<td>Review console</td>
+<td>Human inspection and correction</td>
+<td>Hide evidence or disagreement</td>
+</tr>
+</tbody>
+</table>
+<h3 id="online-path">Online path</h3>
+<p>Fast and conservative:</p>
+<p><code>parse → retrieve state → verify → update belief → choose safe action → log</code></p>
+<h3 id="offline-path">Offline path</h3>
+<p>Heavier work:</p>
+<ul>
+<li>recalibrate models and item difficulty</li>
+<li>find candidate misconceptions / prerequisite edges</li>
+<li>detect drift and subgroup failures</li>
+<li>replay old episodes after a graph correction</li>
+<li>evaluate policies counterfactually</li>
+<li>build human review queues</li>
+</ul>
+<p>Not every turn needs every model. Routine correctness should go to deterministic graders; ambiguous open-ended work can go to more expensive models; consequential uncertainty can bring extra verification or a human.</p>
+<hr />
+<h2 id="companies-systems-to-inspect">Companies / systems to inspect</h2>
+<h3 id="aleks">ALEKS</h3>
+<p>Uses Knowledge Space Theory and adaptive assessment to locate a learner in a structured knowledge space with relatively few questions.</p>
+<p><code>inspect:</code> how explicit knowledge states, calibrated questions and prerequisite structure reduce diagnostic burden before conversation even begins.<br />
+<a href="https://www.aleks.com/about_aleks/knowledge_space_theory">Research Behind ALEKS</a></p>
+<h3 id="duolingo-birdbrain">Duolingo Birdbrain</h3>
+<p>Duolingo describes continuous co-estimation of learner proficiency and content difficulty.</p>
+<p><code>inspect:</code> learner and content models should be connected. A question’s difficulty is not an eternal metadata field; it changes by learner, language, course and context.<br />
+<a href="https://blog.duolingo.com/learning-how-to-help-you-learn-introducing-birdbrain/">Birdbrain</a> · <a href="https://blog.duolingo.com/unique-engineering-problems/">Engineering at Duolingo</a></p>
+<h3 id="carnegie-learning-mathia-livelab">Carnegie Learning MATHia + LiveLab</h3>
+<p>Skill-level adaptation plus teacher-facing signals around progress, inactivity, hint use and at-risk patterns.</p>
+<p><code>inspect:</code> diagnosis must reach scarce human attention. Teacher workflow is part of the architecture.<br />
+<a href="https://support.carnegielearning.com/help-center/math/livelab/article/livelab-overview/">LiveLab overview</a></p>
+<h3 id="khanmigo">Khanmigo</h3>
+<p>Khan Academy has described supplying tutoring with recent practice attempts, demonstrated skills and prerequisite progress, then evaluating through classroom observation, interviews and transcript analysis.</p>
+<p><code>inspect:</code> what a structured learner-history projection looks like; how conversational tutoring is evaluated beyond whether the chat sounds good.<br />
+<a href="https://blog.khanacademy.org/how-khan-academy-is-building-a-better-ai-tutor-our-most-recent-learnings/">Recent Khan Academy learnings</a></p>
+<h3 id="student-simulators">Student simulators</h3>
+<p><code>inspect:</code> StudentSim and related work for simulation design, but specifically look for simulator-to-real validation rather than pretty demo conversations.<br />
+<a href="https://arxiv.org/abs/2609.01591">StudentSim</a> · <a href="https://aclanthology.org/2024.findings-emnlp.912/">Student Data Paradox</a></p>
+<hr />
+<h2 id="what-seems-mature-what-does-not">What seems mature / what does not</h2>
+<table>
+<colgroup>
+<col style="width: 50%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Capability</th>
+<th>Public-note take</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>BKT / IRT / CAT</td>
+<td>Mature, useful baselines inside bounded domains</td>
+</tr>
+<tr class="even">
+<td>Q-matrix cognitive diagnosis</td>
+<td>Mature but labour-intensive; mapping quality is the risk</td>
+</tr>
+<tr class="odd">
+<td>Knowledge / prerequisite graph</td>
+<td>Mature idea; quality of graph varies enormously</td>
+</tr>
+<tr class="even">
+<td>Deterministic step checking</td>
+<td>Strong where domain permits it; use before LLM judgement</td>
+</tr>
+<tr class="odd">
+<td>Deep / attention knowledge tracing</td>
+<td>Research-mature; prove incremental product value and calibration</td>
+</tr>
+<tr class="even">
+<td>LLM misconception hypotheses</td>
+<td>Promising, but ground / retrieve / verify / abstain</td>
+</tr>
+<tr class="odd">
+<td>Multimodal cognitive diagnosis</td>
+<td>Early; benchmark capture pipeline separately</td>
+</tr>
+<tr class="even">
+<td>Multi-agent diagnosis</td>
+<td>Early; require genuine evidence diversity</td>
+</tr>
+<tr class="odd">
+<td>Conformal diagnostic sets</td>
+<td>Interesting for abstention; shift assumptions matter</td>
+</tr>
+<tr class="even">
+<td>Bandit policy</td>
+<td>Potentially useful inside constrained action sets</td>
+</tr>
+<tr class="odd">
+<td>POMDP framing</td>
+<td>Conceptually right for ongoing tutoring; hard product engineering</td>
+</tr>
+<tr class="even">
+<td>Fully autonomous high-stakes diagnosis</td>
+<td>Not ready</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="moat">Moat?</h2>
+<h3 id="easy-to-copy">Easy to copy</h3>
+<ul>
+<li>an LLM that says “I think you misunderstood fractions”</li>
+<li>generic adaptive difficulty</li>
+<li>prompt-based Socratic questions</li>
+<li>a dashboard with red / green skills</li>
+<li>a multi-agent diagram with no evidence diversity</li>
+<li>confidence scores that do not control behaviour</li>
+</ul>
+<h3 id="harder-to-copy">Harder to copy</h3>
+<ul>
+<li>versioned domain and misconception graphs that survive curriculum change</li>
+<li>diagnostic episodes with evidence, alternatives, assistance and outcome</li>
+<li>validated item–skill mappings</li>
+<li>high-quality step verifiers in important subjects</li>
+<li>calibrated cross-model disagreement patterns</li>
+<li>outcome-linked probe and intervention policies</li>
+<li>teacher and learner correction data</li>
+<li>infrastructure for replay, drift detection and experimentation</li>
+<li>evidence that the diagnosis improves independent transfer, not just next-answer accuracy</li>
+</ul>
+<h3 id="the-uncomfortable-question">The uncomfortable question</h3>
+<p>Is the moat the diagnostic compiler itself? Or is it the accumulated data created by using it well?</p>
+<p>Probably both. The architecture gives the company a place to learn. The real asset is the repeated loop:</p>
+<blockquote>
+<p><strong>evidence → competing diagnosis → targeted action → verified change</strong></p>
+</blockquote>
+<hr />
+<h2 id="founder-grade-experiments">Founder-grade experiments</h2>
+<h3 id="does-model-disagreement-predict-bad-diagnosis">1. Does model disagreement predict bad diagnosis?</h3>
+<p>Run a probabilistic learner model, verifier and LLM hypothesis model over the same episodes. Check whether disagreement predicts expert correction.</p>
+<p><code>why:</code> disagreement could become a teacher-attention router and a high-value labelling queue.</p>
+<h3 id="does-generate-retrieve-rerank-beat-one-shot-diagnosis">2. Does generate → retrieve → rerank beat one-shot diagnosis?</h3>
+<p>Compare one prompt against retrieved misconceptions, reranking and a skeptic pass.</p>
+<p>Measure evidence grounding, false confidence and whether the selected probe is useful.</p>
+<h3 id="can-ai-generate-contrastive-diagnostic-probes">3. Can AI generate contrastive diagnostic probes?</h3>
+<p>For recurring hypothesis pairs, generate minimal questions where different explanations predict different answers. Validate with experts before student use.</p>
+<h3 id="information-gain-vs-learning-gain">4. Information gain vs learning gain</h3>
+<p>Compare a policy that reduces uncertainty fastest with one that optimises delayed independent performance, and one that balances both.</p>
+<h3 id="intervention-as-diagnosis-1">5. Intervention-as-diagnosis</h3>
+<p>For ambiguous cases, compare minimal cue, contrast example, representation switch and prerequisite reminder. Which response patterns update belief and improve transfer?</p>
+<h3 id="student-correction-as-a-sensor">6. Student correction as a sensor</h3>
+<p>Let students say “I guessed,” “I used help,” “typo,” or “wrong skill mapping.” Validate disputes with small probes.</p>
+<h3 id="diagnostic-shelf-life">7. Diagnostic shelf life</h3>
+<p>Estimate how quickly evidence decays by concept, representation, independence level and time gap.</p>
+<h3 id="diagnose-the-content">8. Diagnose the content</h3>
+<p>When many learners show the same pattern, test question wording, diagram, parser, Q-matrix and explanation—not only the student.</p>
+<h3 id="cross-modal-contradiction">9. Cross-modal contradiction</h3>
+<p>Collect cases where final answer, work, spoken explanation and confidence report disagree. The value of multimodality may come more from contradiction than average accuracy.</p>
+<h3 id="better-diagnosis-same-teaching">10. Better diagnosis, same teaching</h3>
+<p>Hold intervention constant while varying diagnostic quality; then hold diagnosis constant while varying intervention quality. Otherwise every improvement gets attributed to the wrong layer.</p>
+<hr />
+<h2 id="things-founders-may-not-notice-early-enough">Things founders may not notice early enough</h2>
+<ul>
+<li>The tutor can create the misconception it later detects through a leading question or bad hint.</li>
+<li>A correct answer after answer-revealing help can be negative evidence of independent mastery.</li>
+<li>“That is not what I meant” may be the most useful signal in the session.</li>
+<li>Misconceptions may be local errors under pressure, not stable beliefs.</li>
+<li>Mastery is representation-dependent: symbolic success may hide graphical or verbal failure.</li>
+<li>Training data is policy-dependent. A tutor that hints quickly produces a different evidence dataset than one that waits.</li>
+<li>Personalisation can reduce future identifiability by always avoiding the learner’s weak representation.</li>
+<li>Stopping encodes whose time the company values and what kind of error it accepts.</li>
+<li>“Low latent ability on factor 17” is statistically interesting and pedagogically useless.</li>
+<li>The system needs a right to forget as well as a model of forgetting.</li>
+<li>A naïve model can punish productive experimentation because unusual methods create more visible errors.</li>
+<li>Teachers are part of the sensor network, not an afterthought.</li>
+</ul>
+<hr />
+<h2 id="open-loops">Open loops</h2>
+<ul>
+<li>What is the smallest diagnostic episode that is genuinely useful, not a data-collection fantasy?</li>
+<li>Can a learner see uncertainty without becoming confused or gaming the system?</li>
+<li>How should a JEE learner’s long-term exam objective change the cost of more probing?</li>
+<li>How different is diagnosis in mathematics, essay writing, science diagrams, spoken language and UPSC answers?</li>
+<li>When does an LLM-generated hypothesis become strong enough to add to the misconception graph?</li>
+<li>Can we measure whether an explanation itself caused learning, rather than cued the next answer?</li>
+<li>What causes stronger dependence: excessive hints, warm conversational attachment, or invisible adaptive paths?</li>
+<li>How much model disagreement is useful before the tutor becomes slow and indecisive?</li>
+<li>Can teachers realistically correct Q-matrix and misconception-graph issues without being given a new unpaid job?</li>
+<li>What should the tutor retain for learning and what should it delete for privacy?</li>
+<li>How do we distinguish a student who is exploring from one who is confused?</li>
+<li>When should the system say, “I do not know why this happened yet”?</li>
+<li>Is an AI diagnostic compiler a cross-subject platform, or will every serious domain require its own specialised evidence and verifier stack?</li>
+</ul>
+<hr />
+<h2 id="visuals-to-add-later">Visuals to add later</h2>
+<ul>
+<li><strong>Diagnostic episode:</strong> annotated example of one student error moving through evidence, competing hypotheses, action and verification.</li>
+<li><strong>Belief update:</strong> same wrong answer, different underlying causes, different next moves.</li>
+<li><strong>Verifier hierarchy:</strong> deterministic tools → domain models → LLM interpretation.</li>
+<li><strong>CAT vs ongoing tutor:</strong> bounded assessment versus actions that also teach.</li>
+<li><strong>Moat map:</strong> chat interface versus diagnostic infrastructure.</li>
+<li><strong>Evidence dependence:</strong> four correlated traces versus four independent channels.</li>
+</ul>
+<p>No decorative visuals. Each one should make a hidden distinction visible.</p>
+<hr />
+<h2 id="source-shelf-first-reading-pass">Source shelf — first reading pass</h2>
+<h3 id="learner-modelling-cognitive-diagnosis">Learner modelling / cognitive diagnosis</h3>
+<ul>
+<li><a href="https://doi.org/10.1007/BF01099821">Corbett &amp; Anderson (1995) — Knowledge Tracing</a></li>
+<li><a href="https://arxiv.org/abs/1506.05908">Piech et al. (2015) — Deep Knowledge Tracing</a></li>
+<li><a href="https://arxiv.org/abs/1611.08108">Zhang et al. (2017) — Dynamic Key-Value Memory Networks</a></li>
+<li><a href="https://doi.org/10.1145/3394486.3403282">Ghosh, Heffernan &amp; Lan (2020) — Attentive Knowledge Tracing</a></li>
+<li><a href="https://doi.org/10.1007/s11336-011-9207-7">de la Torre (2011) — G-DINA</a></li>
+<li><a href="https://ojs.aaai.org/index.php/AAAI/article/view/6080">Wang et al. (2020) — Neural Cognitive Diagnosis</a></li>
+<li><a href="https://doi.org/10.1016/j.knosys.2022.109547">Gao et al. (2022) — Graph-based cognitive diagnosis</a></li>
+<li><a href="https://doi.org/10.1007/s11336-008-9055-4">de la Torre (2008) — Q-matrix validation</a></li>
+<li><a href="https://doi.org/10.1177/0146621617722791">Kuo, Chen &amp; de la Torre (2018) — Skills + misconceptions</a></li>
+</ul>
+<h3 id="drift-uncertainty-policy">Drift / uncertainty / policy</h3>
+<ul>
+<li><a href="https://educationaldatamining.org/EDM2023/proceedings/2023.EDM-short-papers.28/">Knowledge Tracing Over Time (2023)</a></li>
+<li><a href="https://educationaldatamining.org/EDM2025/proceedings/2025.EDM.doctoral-consortium-papers.255/">Concept Drift Detection for Knowledge Tracing (2025)</a></li>
+<li><a href="https://papers.nips.cc/paper/8613-conformalized-quantile-regression">Conformalized Quantile Regression</a></li>
+<li><a href="https://arxiv.org/abs/2501.05415">Uncertainty-aware Knowledge Tracing (2025)</a></li>
+<li><a href="https://doi.org/10.3758/s13428-018-1068-x">CAT stopping rules</a></li>
+<li><a href="https://doi.org/10.1287/ited.2025.0174">Contextual Thompson Sampling for learner skill gain</a></li>
+<li><a href="https://arxiv.org/abs/1804.05212">Difficulty ranking + multi-armed bandits</a></li>
+</ul>
+<h3 id="llm-multimodal-diagnosis">LLM / multimodal diagnosis</h3>
+<ul>
+<li><a href="https://arxiv.org/abs/2407.09136">Daheim et al. (2024) — Stepwise verification</a></li>
+<li><a href="https://arxiv.org/abs/2504.00843">MathCog (2025)</a></li>
+<li><a href="https://arxiv.org/abs/2502.13789">From Correctness to Comprehension (2025)</a></li>
+<li><a href="https://aclanthology.org/2026.bea-1.56/">LLM tutoring agents: confirming correct, missing the rest (2026)</a></li>
+<li><a href="https://arxiv.org/abs/2602.02414">Misconception Diagnosis From Student–Tutor Dialogue (2026)</a></li>
+<li><a href="https://ojs.aaai.org/index.php/AAAI/article/view/40736">Conversational Learning Diagnosis via Multi-Turn Interactive Learning (2026)</a></li>
+<li><a href="https://aclanthology.org/2024.findings-emnlp.912/">Student Data Paradox (2024)</a></li>
+<li><a href="https://arxiv.org/abs/2609.01591">StudentSim (2026)</a></li>
+</ul>
+<h3 id="learner-agency-products">Learner agency / products</h3>
+<ul>
+<li><a href="https://eric.ed.gov/?id=EJ1091260">SMILI — Student Models that Invite the Learner In</a></li>
+<li><a href="https://doi.org/10.1016/j.compedu.2020.103878">Open learner models review</a></li>
+<li><a href="https://www.aleks.com/about_aleks/knowledge_space_theory">ALEKS / Knowledge Space Theory</a></li>
+<li><a href="https://blog.duolingo.com/learning-how-to-help-you-learn-introducing-birdbrain/">Duolingo Birdbrain</a></li>
+<li><a href="https://support.carnegielearning.com/help-center/math/livelab/article/livelab-overview/">Carnegie Learning LiveLab</a></li>
+<li><a href="https://blog.khanacademy.org/how-khan-academy-is-building-a-better-ai-tutor-our-most-recent-learnings/">Khan Academy — Building a better AI tutor</a></li>
+</ul>
+<hr />
+<p><code>Next move:</code> turn the first “diagnostic episode” and “prediction is not diagnosis” sections into the website’s initial visible answer. Keep the rest as a long expandable research note until the page supports typed blocks and linked notes properly.</p>
