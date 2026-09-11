@@ -11,13 +11,17 @@
       "id": "personality",
       "title": "Personality of an AI tutor",
       "description": "What should remain stable in the tutor, and what should change with the learner and the moment?",
-      "tags": ["Personality"]
+      "tags": [
+        "Personality"
+      ]
     },
     {
       "id": "student-diagnosis",
       "title": "Student diagnosis",
       "description": "Before teaching, what should the tutor believe about the learner — and how should it update that belief?",
-      "tags": ["Diagnostic engine"]
+      "tags": [
+        "Diagnostic engine"
+      ]
     }
   ],
   "questions": [
@@ -28,7 +32,8 @@
       "answer": [
         "Research dump in progress.",
         "This note will cover personality beyond tone: stable values, relationship memory, coaching microbehaviours, boundaries, archetypes, attachment, safety and whether personality is actually a moat."
-      ]
+      ],
+      "contentUrl": "notes/personality.json"
     },
     {
       "id": "diagnostic-engine",
