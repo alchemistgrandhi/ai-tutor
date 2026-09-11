@@ -1,0 +1,33 @@
+name: Publish draft
+
+on:
+  workflow_dispatch:
+    inputs:
+      payload:
+        description: Pages CMS payload as JSON
+        required: true
+        type: string
+
+permissions:
+  contents: write
+
+concurrency:
+  group: publish-draft
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    if: github.ref_name == 'draft'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out live branch
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Publish saved draft
+        run: |
+          git fetch origin draft
+          git merge --ff-only origin/draft
+          git push origin HEAD:main
