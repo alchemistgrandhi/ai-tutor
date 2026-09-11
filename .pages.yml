@@ -1,12 +1,69 @@
 media:
-  input: images
-  output: images
-  rename: safe
-  categories: [image]
+  - name: content_images
+    label: Note images
+    input: images
+    output: /ai-tutor/images
+    rename: safe
+    categories: [image]
+
+actions:
+  - name: publish-draft
+    label: Publish to website
+    workflow: publish-draft.yml
+    ref: current
+    cancelable: false
+    confirm:
+      title: Publish draft?
+      message: This will move all saved draft changes to the public website.
+      button: Publish
 
 content:
+  - name: personality-note
+    label: Personality note
+    type: file
+    path: notes/personality.json
+    format: json
+    fields:
+      - name: title
+        label: Title
+        type: string
+        required: true
+      - name: status
+        label: Status
+        type: select
+        options:
+          values: [Researching, Draft, Ready]
+      - name: updated
+        label: Updated
+        type: string
+      - name: accent
+        label: Highlight colour
+        type: select
+        options:
+          values:
+            - name: blue
+              label: Blue
+            - name: yellow
+              label: Yellow
+            - name: pink
+              label: Pink
+            - name: green
+              label: Green
+      - name: body
+        label: Note
+        type: rich-text
+        required: true
+        options:
+          format: html
+          switcher: true
+          media: content_images
+          path: personality
+          extensions: [jpg, jpeg, png, webp, gif]
+          categories: [image]
+          rename: safe
+
   - name: tutor-notes
-    label: AI Tutor Notes
+    label: Notes index
     type: file
     path: content.json
     format: json
@@ -42,7 +99,6 @@ content:
             label: ID
             type: string
             required: true
-            description: Lowercase words joined with hyphens.
           - name: title
             label: Topic title
             type: string
@@ -51,11 +107,11 @@ content:
             label: Short description
             type: text
           - name: tags
-            label: Question tags in this topic
+            label: Question tags
             type: string
             list: true
       - name: questions
-        label: Questions and answers
+        label: Questions
         type: object
         list:
           collapsible:
@@ -66,7 +122,6 @@ content:
             label: ID
             type: string
             required: true
-            description: Lowercase words joined with hyphens. Keep existing IDs unchanged.
           - name: tag
             label: Topic tag
             type: string
@@ -75,11 +130,13 @@ content:
             label: Question
             type: text
             required: true
+          - name: contentUrl
+            label: Note file
+            type: string
           - name: answer
-            label: Answer paragraphs
+            label: Short answer paragraphs
             type: text
             list: true
-            required: true
           - name: links
             label: Links
             type: object
@@ -97,8 +154,8 @@ content:
           - name: images
             label: Images
             type: image
-            description: Upload one or several images for this answer.
             options:
+              media: content_images
               multiple:
                 max: 12
               extensions: [jpg, jpeg, png, webp, gif]
@@ -106,8 +163,9 @@ content:
 
 settings:
   content:
-    merge: direct
+    merge: true
   commit:
+    identity: user
     templates:
       create: "Add {path}"
       update: "Update {path}"
