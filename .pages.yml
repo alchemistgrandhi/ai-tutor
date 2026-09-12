@@ -18,7 +18,7 @@ actions:
       button: Publish
 
 content:
-  - name: personality-note
+  - name: personality
     label: Personality note
     type: file
     path: notes/personality.json
