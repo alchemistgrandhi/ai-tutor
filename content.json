@@ -2,7 +2,7 @@
   "eyebrow": "Anand Grandhi / Working notes",
   "title": "Notes on building better AI tutors.",
   "meta": "What research says, what companies are building, and what is still unsolved.<br>A public working map — not a finished theory.",
-  "intro": "For now, this is deliberately narrow: one unfinished note on the relationship layer, and one deep investigation into diagnosis. The tutor should not only react to mistakes. It should learn how to investigate them.",
+  "intro": "Current notes: personality and relationship, student diagnosis, and multimodal content production.",
   "revised": "September 2026",
   "footer": "The tutor should change its methods until the student can think without it.",
   "defaultQuestion": "diagnostic-engine",
@@ -22,6 +22,14 @@
       "tags": [
         "Diagnostic engine"
       ]
+    },
+    {
+      "id": "multimodal-content",
+      "title": "Multimodal content engine",
+      "description": "How should an AI tutor discover, generate, verify and reuse diagrams, animations, simulations and learning games?",
+      "tags": [
+        "Multimodal content"
+      ]
     }
   ],
   "questions": [
@@ -40,6 +48,12 @@
       "tag": "Diagnostic engine",
       "question": "How should the diagnostic engine work?",
       "contentUrl": "notes/diagnostic-engine.html"
+    },
+    {
+      "id": "multimodal-content-engine",
+      "tag": "Multimodal content",
+      "question": "How should a multimodal content engine work?",
+      "contentUrl": "notes/multimodal-content.json"
     }
   ]
 }
