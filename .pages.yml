@@ -19,7 +19,7 @@ actions:
 
 content:
   - name: personality
-    label: Personality note
+    label: Personality 
     type: file
     path: notes/personality.json
     format: json
