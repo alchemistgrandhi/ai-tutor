@@ -106,6 +106,50 @@ content:
           categories: [image]
           rename: safe
 
+  - name: ai-tutor-question-map
+    label: AI tutor question map
+    type: file
+    path: notes/ai-tutor-question-map.json
+    format: json
+    fields:
+      - name: title
+        label: Title
+        type: string
+        required: true
+      - name: status
+        label: Status
+        type: select
+        options:
+          values: [Researching, Draft, Ready]
+      - name: updated
+        label: Updated
+        type: string
+      - name: accent
+        label: Highlight colour
+        type: select
+        options:
+          values:
+            - name: blue
+              label: Blue
+            - name: yellow
+              label: Yellow
+            - name: pink
+              label: Pink
+            - name: green
+              label: Green
+      - name: body
+        label: Note
+        type: rich-text
+        required: true
+        options:
+          format: html
+          switcher: true
+          media: content_images
+          path: ai-tutor-question-map
+          extensions: [jpg, jpeg, png, webp, gif]
+          categories: [image]
+          rename: safe
+
   - name: tutor-notes
     label: Notes index
     type: file
