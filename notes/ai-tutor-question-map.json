@@ -3,5 +3,5 @@
   "status": "Researching",
   "updated": "September 2026",
   "accent": "blue",
-  "body": "<div class=\"note-fragment\">\n  <p>Working list. Incomplete.</p>\n  <p>This should change when the questions are tested against real students.</p>\n</div>\n\n<h2>Nine areas</h2>\n<img src=\"/ai-tutor/images/ai-tutor-question-map-layers.png\" alt=\"Nine areas an AI tutor must address, from learner understanding to human handoff\">\n\n<h2>Questions</h2>\n<img src=\"/ai-tutor/images/ai-tutor-question-map-detailed.png\" alt=\"Detailed research questions grouped across nine areas of an AI tutor\">"
+  "body": "<p>Working list. Incomplete.</p><p>This should change when the questions are tested against real students.</p><h2></h2><img src=\"/ai-tutor/images/ai-tutor-question-map-layers.png\" alt=\"Nine areas an AI tutor must address, from learner understanding to human handoff\"><h2></h2><img src=\"/ai-tutor/images/ai-tutor-question-map-detailed.png\" alt=\"Detailed research questions grouped across nine areas of an AI tutor\"><p></p>"
 }
