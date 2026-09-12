@@ -62,8 +62,8 @@ content:
           categories: [image]
           rename: safe
 
-  - name: multimodal-content-note
-    label: Multimodal content note
+  - name: multimodal-content
+    label: Multimodal content
     type: file
     path: notes/multimodal-content.json
     format: json
