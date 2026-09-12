@@ -2,7 +2,7 @@
   "eyebrow": "Anand Grandhi / Working notes",
   "title": "Notes on building better AI tutors.",
   "meta": "What research says, what companies are building, and what is still unsolved.<br>A public working map — not a finished theory.",
-  "intro": "Current notes: personality and relationship, student diagnosis, and multimodal content production.",
+  "intro": "A working notebook on the systems, decisions and evidence behind a complete AI tutor.",
   "revised": "September 2026",
   "footer": "The tutor should change its methods until the student can think without it.",
   "defaultQuestion": "diagnostic-engine",
@@ -30,6 +30,14 @@
       "tags": [
         "Multimodal content"
       ]
+    },
+    {
+      "id": "questions-every-ai-tutor-should-answer",
+      "title": "The questions every AI tutor should answer",
+      "description": "A working map of the questions behind a complete AI tutor.",
+      "tags": [
+        "Question map"
+      ]
     }
   ],
   "questions": [
@@ -54,6 +62,12 @@
       "tag": "Multimodal content",
       "question": "How should a multimodal content engine work?",
       "contentUrl": "notes/multimodal-content.json"
+    },
+    {
+      "id": "ai-tutor-question-map",
+      "tag": "Question map",
+      "question": "The questions every AI tutor should answer",
+      "contentUrl": "notes/ai-tutor-question-map.json"
     }
   ]
 }
